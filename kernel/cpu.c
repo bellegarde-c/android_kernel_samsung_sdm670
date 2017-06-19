@@ -1600,6 +1600,11 @@ static struct cpuhp_step cpuhp_ap_states[] = {
 		.startup.single		= smpboot_unpark_threads,
 		.teardown.single	= smpboot_park_threads,
 	},
+	[CPUHP_AP_IRQ_AFFINITY_ONLINE] = {
+		.name			= "irq/affinity:online",
+		.startup.single		= irq_affinity_online_cpu,
+		.teardown.single	= NULL,
+	},
 	[CPUHP_AP_PERF_ONLINE] = {
 		.name			= "perf:online",
 		.startup.single		= perf_event_restart_events,
