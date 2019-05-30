@@ -22,6 +22,7 @@
 #include <linux/irqreturn.h>
 #include <linux/irqdomain.h>
 #include <linux/mdss_io_util.h>
+#include <linux/pm_qos.h>
 
 #include <linux/msm-bus.h>
 #include <linux/file.h>
@@ -301,6 +302,10 @@ struct mdss_data_type {
 	struct mdss_smmu_client mdss_smmu[MDSS_IOMMU_MAX_DOMAIN];
 	struct mdss_smmu_ops smmu_ops;
 	struct mutex reg_lock;
+
+	struct pm_qos_request pm_irq_req;
+	struct work_struct pm_unset_work;
+	bool pm_irq_set;
 
 	/* bitmap to track pipes that have BWC enabled */
 	DECLARE_BITMAP(bwc_enable_map, MAX_DRV_SUP_PIPES);
