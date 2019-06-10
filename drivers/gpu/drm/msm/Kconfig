@@ -168,3 +168,8 @@ config SEC_DISPLAYPORT_LOGGER
 	depends on SEC_DISPLAYPORT
 	help
           Samsung specific displayport log changes.
+
+config FENCE_DEBUG
+	bool "Print fence name to userspace"
+	depends on DRM_MSM
+	default n
