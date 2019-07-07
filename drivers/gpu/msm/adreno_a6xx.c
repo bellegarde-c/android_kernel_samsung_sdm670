@@ -402,8 +402,6 @@ static void a6xx_pwrup_reglist_init(struct adreno_device *adreno_dev)
 
 static void a6xx_init(struct adreno_device *adreno_dev)
 {
-	a6xx_crashdump_init(adreno_dev);
-
 	/*
 	 * If the GMU is not enabled, rewrite the offset for the always on
 	 * counters to point to the CP always on instead of GMU always on
@@ -2690,15 +2688,6 @@ static struct adreno_irq a6xx_irq = {
 	.mask = A6XX_INT_MASK,
 };
 
-static struct adreno_snapshot_sizes a6xx_snap_sizes = {
-	.cp_pfp = 0x33,
-	.roq = 0x400,
-};
-
-static struct adreno_snapshot_data a6xx_snapshot_data = {
-	.sect_sizes = &a6xx_snap_sizes,
-};
-
 static struct adreno_coresight_register a6xx_coresight_regs[] = {
 	{ A6XX_DBGC_CFG_DBGBUS_SEL_A },
 	{ A6XX_DBGC_CFG_DBGBUS_SEL_B },
@@ -3864,10 +3853,7 @@ unlock:
 struct adreno_gpudev adreno_a6xx_gpudev = {
 	.reg_offsets = &a6xx_reg_offsets,
 	.start = a6xx_start,
-	.snapshot = a6xx_snapshot,
 	.irq = &a6xx_irq,
-	.snapshot_data = &a6xx_snapshot_data,
-	.irq_trace = trace_kgsl_a5xx_irq_status,
 	.num_prio_levels = KGSL_PRIORITY_MAX_RB_LEVELS,
 	.platform_setup = a6xx_platform_setup,
 	.init = a6xx_init,
@@ -3903,5 +3889,4 @@ struct adreno_gpudev adreno_a6xx_gpudev = {
 	.sptprac_is_on = a6xx_sptprac_is_on,
 	.ccu_invalidate = a6xx_ccu_invalidate,
 	.perfcounter_update = a6xx_perfcounter_update,
-	.coresight = {&a6xx_coresight, &a6xx_coresight_cx},
 };
