@@ -565,7 +565,6 @@ struct adreno_device {
 	unsigned int speed_bin;
 	unsigned int quirks;
 
-	struct coresight_device *csdev[GPU_CORESIGHT_MAX];
 	uint32_t gpmu_throttle_counters[ADRENO_GPMU_THROTTLE_COUNTERS];
 	struct work_struct irq_storm_work;
 
@@ -887,35 +886,6 @@ struct adreno_debugbus_block {
 	unsigned int dwords;
 };
 
-/*
- * struct adreno_snapshot_section_sizes - Structure holding the size of
- * different sections dumped during device snapshot
- * @cp_pfp: CP PFP data section size
- * @cp_me: CP ME data section size
- * @vpc_mem: VPC memory section size
- * @cp_meq: CP MEQ size
- * @shader_mem: Size of shader memory of 1 shader section
- * @cp_merciu: CP MERCIU size
- * @roq: ROQ size
- */
-struct adreno_snapshot_sizes {
-	int cp_pfp;
-	int cp_me;
-	int vpc_mem;
-	int cp_meq;
-	int shader_mem;
-	int cp_merciu;
-	int roq;
-};
-
-/*
- * struct adreno_snapshot_data - Holds data used in snapshot
- * @sect_sizes: Has sections sizes
- */
-struct adreno_snapshot_data {
-	struct adreno_snapshot_sizes *sect_sizes;
-};
-
 enum adreno_cp_marker_type {
 	IFPC_DISABLE,
 	IFPC_ENABLE,
@@ -935,16 +905,11 @@ struct adreno_gpudev {
 
 	struct adreno_perfcounters *perfcounters;
 	const struct adreno_invalid_countables *invalid_countables;
-	struct adreno_snapshot_data *snapshot_data;
-
-	struct adreno_coresight *coresight[GPU_CORESIGHT_MAX];
 
 	struct adreno_irq *irq;
 	int num_prio_levels;
 	unsigned int vbif_xin_halt_ctrl0_mask;
 	/* GPU specific function hooks */
-	void (*irq_trace)(struct adreno_device *, unsigned int status);
-	void (*snapshot)(struct adreno_device *, struct kgsl_snapshot *);
 	void (*platform_setup)(struct adreno_device *);
 	void (*init)(struct adreno_device *);
 	void (*remove)(struct adreno_device *);
@@ -1118,9 +1083,9 @@ void adreno_shadermem_regread(struct kgsl_device *device,
 						unsigned int offsetwords,
 						unsigned int *value);
 
-void adreno_snapshot(struct kgsl_device *device,
+static inline void adreno_snapshot(struct kgsl_device *device,
 		struct kgsl_snapshot *snapshot,
-		struct kgsl_context *context);
+		struct kgsl_context *context) {}
 
 int adreno_reset(struct kgsl_device *device, int fault);
 
