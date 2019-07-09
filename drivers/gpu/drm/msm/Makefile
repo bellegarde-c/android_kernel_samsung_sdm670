@@ -200,3 +200,4 @@ obj-$(CONFIG_DRM_MSM)	+= msm_drm.o
 ifeq ($(CONFIG_DISPLAY_SAMSUNG),y)
 obj-y += samsung/
 endif
+CFLAGS_sde_crtc.o += -Wframe-larger-than=8192
