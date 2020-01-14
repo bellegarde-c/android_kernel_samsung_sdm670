@@ -1159,17 +1159,11 @@ static int apr_probe(struct platform_device *pdev)
 	if (!apr_reset_workqueue)
 		return -ENOMEM;
 
-	apr_pkt_ctx = ipc_log_context_create(APR_PKT_IPC_LOG_PAGE_CNT,
-						"apr", 0);
-	if (!apr_pkt_ctx)
-		pr_err("%s: Unable to create ipc log context\n", __func__);
-
 	is_initial_boot = true;
 	subsys_notif_register("apr_adsp", AUDIO_NOTIFIER_ADSP_DOMAIN,
 			      &adsp_service_nb);
 	subsys_notif_register("apr_modem", AUDIO_NOTIFIER_MODEM_DOMAIN,
 			      &modem_service_nb);
-
 	apr_tal_init();
 	INIT_DELAYED_WORK(&add_chld_dev_work, apr_add_child_devices);
 	apr_dev_ptr = &pdev->dev;
