@@ -209,6 +209,7 @@ struct irq_data {
  * IRQD_MANAGED_SHUTDOWN	- Interrupt was shutdown due to empty affinity
  *				  mask. Applies only to affinity managed irqs.
  * IRQD_SINGLE_TARGET		- IRQ allows only a single affinity target
+ * IRQD_PERF_CRITICAL		- IRQ is performance-critical
  */
 enum {
 	IRQD_TRIGGER_MASK		= 0xf,
@@ -229,6 +230,7 @@ enum {
 	IRQD_IRQ_STARTED		= (1 << 22),
 	IRQD_MANAGED_SHUTDOWN		= (1 << 23),
 	IRQD_SINGLE_TARGET		= (1 << 24),
+	IRQD_PERF_CRITICAL		= (1 << 26),
 };
 
 #define __irqd_to_state(d) ACCESS_PRIVATE((d)->common, state_use_accessors)
