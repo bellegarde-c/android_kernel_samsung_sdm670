@@ -1279,7 +1279,7 @@ static int _sde_rm_autorefresh_disable(struct sde_hw_pingpong *pp,
 	for (i = 0; i < loop; i++) {
 		info.wr_ptr_line_count = 0;
 		info.rd_ptr_init_val = 0;
-		pp->ops.get_vsync_info(pp, &info);
+		pp->ops.get_vsync_info(pp, &info, true);
 
 		SDE_EVT32(pp->idx - PINGPONG_0, info.wr_ptr_line_count,
 			info.rd_ptr_init_val, SDE_EVTLOG_FUNC_CASE1);
@@ -1290,7 +1290,7 @@ static int _sde_rm_autorefresh_disable(struct sde_hw_pingpong *pp,
 
 		info.wr_ptr_line_count = 0;
 		info.rd_ptr_init_val = 0;
-		pp->ops.get_vsync_info(pp, &info);
+		pp->ops.get_vsync_info(pp, &info, true);
 		SDE_DEBUG("i=%d, line count=%d\n", i, info.wr_ptr_line_count);
 
 		SDE_EVT32(pp->idx - PINGPONG_0, info.wr_ptr_line_count,
