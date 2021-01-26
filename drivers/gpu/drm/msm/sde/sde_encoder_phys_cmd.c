@@ -607,7 +607,7 @@ static int _sde_encoder_phys_cmd_poll_write_pointer_started(
 			!hw_pp->ops.poll_timeout_wr_ptr)
 		return 0;
 
-	ret = hw_pp->ops.get_vsync_info(hw_pp, &info);
+	ret = hw_pp->ops.get_vsync_info(hw_pp, &info, false);
 	if (ret)
 		return ret;
 
@@ -645,7 +645,7 @@ static bool _sde_encoder_phys_cmd_is_ongoing_pptx(
 	if (!hw_pp || !hw_pp->ops.get_vsync_info)
 		return false;
 
-	hw_pp->ops.get_vsync_info(hw_pp, &info);
+	hw_pp->ops.get_vsync_info(hw_pp, &info, true);
 
 	SDE_EVT32(DRMID(phys_enc->parent),
 			phys_enc->hw_pp->idx - PINGPONG_0,
@@ -1088,7 +1088,7 @@ static int sde_encoder_phys_cmd_get_write_line_count(
 	if (!hw_pp->ops.get_vsync_info)
 		return -EINVAL;
 
-	if (hw_pp->ops.get_vsync_info(hw_pp, &info))
+	if (hw_pp->ops.get_vsync_info(hw_pp, &info, true))
 		return -EINVAL;
 
 	return (int)info.wr_ptr_line_count;
