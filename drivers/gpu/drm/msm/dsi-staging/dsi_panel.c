@@ -1042,7 +1042,7 @@ static int dsi_panel_update_backlight(struct dsi_panel *panel,
 
 	dsi = &panel->mipi_device;
 
-	LCD_INFO("bl_lvl = %d\n", bl_lvl);
+	LCD_DEBUG("bl_lvl = %d\n", bl_lvl);
 #if defined(CONFIG_DISPLAY_SAMSUNG)
 	rc = ss_brightness_dcs(panel->panel_private, bl_lvl);
 	if (rc < 0)
