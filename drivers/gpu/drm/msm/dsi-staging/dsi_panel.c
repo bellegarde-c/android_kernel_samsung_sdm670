@@ -1042,15 +1042,14 @@ static int dsi_panel_update_backlight(struct dsi_panel *panel,
 
 	dsi = &panel->mipi_device;
 
-	LCD_INFO("bl_lvl = %d\n", bl_lvl);
 #if defined(CONFIG_DISPLAY_SAMSUNG)
 	rc = ss_brightness_dcs(panel->panel_private, bl_lvl);
 	if (rc < 0)
-		pr_err("failed to update dcs backlight:%d\n", bl_lvl);
+		pr_debug("failed to update dcs backlight:%d\n", bl_lvl);
 #else
 	rc = mipi_dsi_dcs_set_display_brightness(dsi, bl_lvl);
 	if (rc < 0)
-		pr_err("failed to update dcs backlight:%d\n", bl_lvl);
+		pr_debug("failed to update dcs backlight:%d\n", bl_lvl);
 #endif
 
 	return rc;
@@ -5072,7 +5071,7 @@ int dsi_panel_post_unprepare(struct dsi_panel *panel)
 	int rc = 0;
 
 	if (!panel) {
-		pr_err("invalid params\n");
+		pr_debug("invalid params\n");
 		return -EINVAL;
 	}
 
@@ -5083,7 +5082,7 @@ int dsi_panel_post_unprepare(struct dsi_panel *panel)
 
 	rc = dsi_panel_power_off(panel);
 	if (rc) {
-		pr_err("[%s] panel power_Off failed, rc=%d\n",
+		pr_debug("[%s] panel power_Off failed, rc=%d\n",
 		       panel->name, rc);
 		goto error;
 	}
