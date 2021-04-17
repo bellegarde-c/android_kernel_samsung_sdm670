@@ -2628,17 +2628,9 @@ error:
 static int dsi_panel_parse_misc_features(struct dsi_panel *panel,
 				     struct device_node *of_node)
 {
-	panel->ulps_enabled =
-		of_property_read_bool(of_node, "qcom,ulps-enabled");
+	panel->ulps_enabled = true;
 
-	pr_info("%s: ulps feature %s\n", __func__,
-		(panel->ulps_enabled ? "enabled" : "disabled"));
-
-	panel->ulps_suspend_enabled =
-		of_property_read_bool(of_node, "qcom,suspend-ulps-enabled");
-
-	pr_info("%s: ulps during suspend feature %s", __func__,
-		(panel->ulps_suspend_enabled ? "enabled" : "disabled"));
+	panel->ulps_suspend_enabled = true;
 
 	panel->te_using_watchdog_timer = of_property_read_bool(of_node,
 					"qcom,mdss-dsi-te-using-wd");
@@ -2646,8 +2638,8 @@ static int dsi_panel_parse_misc_features(struct dsi_panel *panel,
 	panel->sync_broadcast_en = of_property_read_bool(of_node,
 			"qcom,cmd-sync-wait-broadcast");
 
-	panel->lp11_init = of_property_read_bool(of_node,
-			"qcom,mdss-dsi-lp11-init");
+	panel->lp11_init = false;
+
 	return 0;
 }
 
