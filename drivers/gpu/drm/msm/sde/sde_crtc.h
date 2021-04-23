@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015-2018 The Linux Foundation. All rights reserved.
+ * Copyright (c) 2015-2021 The Linux Foundation. All rights reserved.
  * Copyright (C) 2013 Red Hat
  * Author: Rob Clark <robdclark@gmail.com>
  *
@@ -807,4 +807,9 @@ uint64_t sde_crtc_get_sbuf_clk(struct drm_crtc_state *state);
  */
 void sde_crtc_misr_setup(struct drm_crtc *crtc, bool enable, u32 frame_count);
 
+/**
+ * _sde_crtc_clear_dim_layers_v1 - clear all dim layer settings
+ * @cstate:      Pointer to drm crtc state
+ */
+void _sde_crtc_clear_dim_layers_v1(struct drm_crtc_state *state);
 #endif /* _SDE_CRTC_H_ */
