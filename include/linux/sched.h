@@ -3025,6 +3025,9 @@ extern void sched_exit(struct task_struct *p);
 static inline void sched_exit(struct task_struct *p) { }
 #endif
 
+#ifdef CONFIG_ANDROID_SIMPLE_LMK
+	struct task_struct		*simple_lmk_next;
+#endif
 
 extern void proc_caches_init(void);
 extern void flush_signals(struct task_struct *);
