@@ -922,7 +922,11 @@ static struct cftype files[] = {
 	{
 		.name = "sched_boost_no_override",
 		.read_u64 = sched_boost_override_read,
+#ifdef CONFIG_STUNE_ASSIST
 		.write_u64 = sched_boost_override_write_wrapper,
+#else
+		.write_u64 = sched_boost_override_write,
+#endif
 	},
 	{
 		.name = "sched_boost_enabled",
@@ -932,18 +936,30 @@ static struct cftype files[] = {
 	{
 		.name = "colocate",
 		.read_u64 = sched_colocate_read,
+#ifdef CONFIG_STUNE_ASSIST
 		.write_u64 = sched_colocate_write_wrapper,
+#else
+		.write_u64 = sched_colocate_write,
+#endif
 	},
 #endif
 	{
 		.name = "boost",
 		.read_s64 = boost_read,
+#ifdef CONFIG_STUNE_ASSIST
 		.write_s64 = boost_write_wrapper,
+#else
+		.write_s64 = boost_write,
+#endif
 	},
 	{
 		.name = "prefer_idle",
 		.read_u64 = prefer_idle_read,
+#ifdef CONFIG_STUNE_ASSIST
 		.write_u64 = prefer_idle_write_wrapper,
+#else
+		.write_u64 = prefer_idle_write,
+#endif
 	},
 	{ }	/* terminate */
 };
