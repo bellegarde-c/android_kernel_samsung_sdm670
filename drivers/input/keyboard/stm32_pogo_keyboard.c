@@ -26,6 +26,9 @@
 #elif CONFIG_DRV_SAMSUNG
 #include <linux/sec_class.h>
 #endif
+#if !defined(CONFIG_SEC_DEBUG_TSP_LOG)
+#include <asm-generic/uaccess.h>
+#endif
 
 extern void fpga_rstn_control(void);
 extern void fpga_rstn_high(void);
