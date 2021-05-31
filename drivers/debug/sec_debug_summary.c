@@ -444,10 +444,12 @@ static int __init summary_init_avc_log(struct sec_debug_summary_data_apss *p)
 	return 0;
 }
 
+#if defined(CONFIG_SEC_DEBUG_POWER_LOG)
 int sec_debug_is_modem_separate_debug_ssr(void)
 {
 	return secdbg_summary->priv.modem.seperate_debug;
 }
+#endif
 
 #define SET_MEMBER_TYPE_INFO(PTR, TYPE, MEMBER) \
 	{ \
