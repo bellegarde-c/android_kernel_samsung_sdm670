@@ -180,8 +180,10 @@ static inline void sec_gaf_supply_rqinfo(unsigned short curr_offset,
 
 static inline bool sec_debug_is_enabled(void) { return false; }
 static inline unsigned int sec_debug_level(void) {return 0; }
+#if defined(CONFIG_SEC_DEBUG_POWER_LOG)
 static inline  int sec_debug_is_modem_separate_debug_ssr(void)
 			{ return SEC_DEBUG_MODEM_SEPARATE_DIS; }
+#endif
 static inline void sec_debug_hw_reset(void) {}
 static inline void emerg_pet_watchdog(void) {}
 static inline void sec_debug_set_rr(u32 reason) {}

@@ -1272,6 +1272,7 @@ int subsystem_restart_dev(struct subsys_device *dev)
 
 	name = dev->desc->name;
 
+#if defined(CONFIG_SEC_DEBUG_POWER_LOG)
 	if ((sec_debug_is_modem_separate_debug_ssr() ==
 	    SEC_DEBUG_MODEM_SEPARATE_EN)
 	    && strcmp(name, "slpi")
@@ -1280,7 +1281,7 @@ int subsystem_restart_dev(struct subsys_device *dev)
 		ssr_enable = sec_debug_is_enabled_for_ssr();
 	} else
 		pr_info("SSR by only ap debug level!!\n");
-
+#endif
 	if ((!sec_debug_is_enabled() || silent_ssr)
 	    || (!ssr_enable))
 		dev->restart_level = RESET_SUBSYS_COUPLED;
