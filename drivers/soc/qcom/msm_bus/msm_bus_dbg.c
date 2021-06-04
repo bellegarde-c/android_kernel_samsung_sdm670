@@ -336,6 +336,7 @@ struct dentry *msm_bus_dbg_create(const char *name, mode_t mode,
 		&client_data_fops);
 }
 
+#if 0
 int msm_bus_dbg_add_client(const struct msm_bus_client_handle *pdata)
 
 {
@@ -544,6 +545,7 @@ static int msm_bus_dbg_fill_cl_buffer(const struct msm_bus_scale_pdata *pdata,
 
 	return i;
 }
+#endif
 
 static ssize_t  msm_bus_dbg_update_request_write(struct file *file,
 	const char __user *ubuf, size_t cnt, loff_t *ppos)
@@ -673,6 +675,7 @@ static const struct file_operations rules_dbg_fops = {
 	.read		= rules_dbg_read,
 };
 
+#if 0
 static int msm_bus_dbg_record_fabric(const char *fabname, struct dentry *file)
 {
 	struct msm_bus_fab_list *fablist;
@@ -758,6 +761,7 @@ static int msm_bus_dbg_fill_fab_buffer(const char *fabname,
 	mutex_unlock(&msm_bus_dbg_fablist_lock);
 	return 0;
 }
+#endif
 
 static const struct file_operations msm_bus_dbg_update_request_fops = {
 	.open = client_data_open,
@@ -808,6 +812,7 @@ static const struct file_operations msm_bus_dbg_dump_clients_fops = {
 	.read		= msm_bus_dbg_dump_clients_read,
 };
 
+#if 0
 /**
  * msm_bus_dbg_client_data() - Add debug data for clients
  * @pdata: Platform data of the client
@@ -856,6 +861,7 @@ void msm_bus_dbg_commit_data(const char *fabname, void *cdata,
 			nslaves, ntslaves);
 }
 EXPORT_SYMBOL(msm_bus_dbg_commit_data);
+#endif
 
 static int __init msm_bus_debugfs_init(void)
 {
