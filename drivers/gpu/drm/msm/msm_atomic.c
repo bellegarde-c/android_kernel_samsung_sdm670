@@ -24,7 +24,6 @@
 #include "msm_kms.h"
 #include "msm_gem.h"
 #include "msm_fence.h"
-#include "sde_trace.h"
 #if defined(CONFIG_DISPLAY_SAMSUNG)
 #include "ss_dsi_panel_common.h"
 #endif
@@ -233,7 +232,6 @@ msm_disable_outputs(struct drm_device *dev, struct drm_atomic_state *old_state)
 	struct msm_drm_notifier notifier_data;
 	int i, blank;
 
-	SDE_ATRACE_BEGIN("msm_disable");
 	for_each_connector_in_state(old_state, connector, old_conn_state, i) {
 		const struct drm_encoder_helper_funcs *funcs;
 		struct drm_encoder *encoder;
@@ -321,7 +319,6 @@ msm_disable_outputs(struct drm_device *dev, struct drm_atomic_state *old_state)
 		else
 			funcs->dpms(crtc, DRM_MODE_DPMS_OFF);
 	}
-	SDE_ATRACE_END("msm_disable");
 }
 
 static void
@@ -438,8 +435,7 @@ static void msm_atomic_helper_commit_modeset_enables(struct drm_device *dev,
 	int bridge_enable_count = 0;
 	int i, blank;
 
-	SDE_ATRACE_BEGIN("msm_enable");
-	for_each_crtc_in_state(old_state, crtc, old_crtc_state, i) {
+    for_each_crtc_in_state(old_state, crtc, old_crtc_state, i) {
 		const struct drm_crtc_helper_funcs *funcs;
 
 		/* Need to filter out CRTCs where only planes change. */
@@ -518,7 +514,6 @@ static void msm_atomic_helper_commit_modeset_enables(struct drm_device *dev,
 
 	/* If no bridges were pre_enabled, skip iterating over them again */
 	if (bridge_enable_count == 0) {
-		SDE_ATRACE_END("msm_enable");
 		return;
 	}
 
@@ -548,7 +543,6 @@ static void msm_atomic_helper_commit_modeset_enables(struct drm_device *dev,
 					    &notifier_data);
 		}
 	}
-	SDE_ATRACE_END("msm_enable");
 }
 #if defined(CONFIG_DISPLAY_SAMSUNG)
 int ss_get_vdd_ndx_from_state(struct drm_atomic_state *old_state);
@@ -753,10 +747,8 @@ int msm_atomic_commit(struct drm_device *dev,
 		return -EINVAL;
 	}
 
-	SDE_ATRACE_BEGIN("atomic_commit");
 	ret = drm_atomic_helper_prepare_planes(dev, state);
 	if (ret) {
-		SDE_ATRACE_END("atomic_commit");
 		return ret;
 	}
 
@@ -838,11 +830,10 @@ retry:
 	 */
 
 	msm_atomic_commit_dispatch(dev, state, c);
-	SDE_ATRACE_END("atomic_commit");
+
 	return 0;
 
 error:
 	drm_atomic_helper_cleanup_planes(dev, state);
-	SDE_ATRACE_END("atomic_commit");
 	return ret;
 }

@@ -36,7 +36,6 @@
 #include "sde_power_handle.h"
 #include "sde_hw_dsc.h"
 #include "sde_crtc.h"
-#include "sde_trace.h"
 #include "sde_core_irq.h"
 
 #if defined(CONFIG_DISPLAY_SAMSUNG)
@@ -3117,7 +3116,6 @@ static void sde_encoder_vblank_callback(struct drm_encoder *drm_enc,
 	if (!drm_enc || !phy_enc)
 		return;
 
-	SDE_ATRACE_BEGIN("encoder_vblank_callback");
 	sde_enc = to_sde_encoder_virt(drm_enc);
 
 	spin_lock_irqsave(&sde_enc->enc_spinlock, lock_flags);
@@ -3126,7 +3124,6 @@ static void sde_encoder_vblank_callback(struct drm_encoder *drm_enc,
 	spin_unlock_irqrestore(&sde_enc->enc_spinlock, lock_flags);
 
 	atomic_inc(&phy_enc->vsync_cnt);
-	SDE_ATRACE_END("encoder_vblank_callback");
 }
 
 static void sde_encoder_underrun_callback(struct drm_encoder *drm_enc,
@@ -3135,17 +3132,12 @@ static void sde_encoder_underrun_callback(struct drm_encoder *drm_enc,
 	if (!phy_enc)
 		return;
 
-	SDE_ATRACE_BEGIN("encoder_underrun_callback");
 	atomic_inc(&phy_enc->underrun_cnt);
 	SDE_EVT32(DRMID(drm_enc), atomic_read(&phy_enc->underrun_cnt));
-
-	trace_sde_encoder_underrun(DRMID(drm_enc),
-		atomic_read(&phy_enc->underrun_cnt));
 
 	SDE_DBG_CTRL("stop_ftrace");
 	SDE_DBG_CTRL("panic_underrun");
 
-	SDE_ATRACE_END("encoder_underrun_callback");
 }
 
 void sde_encoder_register_vblank_callback(struct drm_encoder *drm_enc,
@@ -4152,7 +4144,6 @@ int sde_encoder_prepare_for_kickoff(struct drm_encoder *drm_enc,
 		ln_cnt1 = -EINVAL;
 
 	/* prepare for next kickoff, may include waiting on previous kickoff */
-	SDE_ATRACE_BEGIN("enc_prepare_for_kickoff");
 	for (i = 0; i < sde_enc->num_phys_encs; i++) {
 		phys = sde_enc->phys_encs[i];
 		params->is_primary = sde_enc->disp_info.is_primary;
@@ -4168,7 +4159,6 @@ int sde_encoder_prepare_for_kickoff(struct drm_encoder *drm_enc,
 			_sde_encoder_setup_dither(phys);
 		}
 	}
-	SDE_ATRACE_END("enc_prepare_for_kickoff");
 
 	rc = sde_encoder_resource_control(drm_enc, SDE_ENC_RC_EVENT_KICKOFF);
 	if (rc) {
@@ -4278,7 +4268,6 @@ static int _sde_encoder_reset_ctl_hw(struct drm_encoder *drm_enc)
 
 	sde_enc = to_sde_encoder_virt(drm_enc);
 
-	SDE_ATRACE_BEGIN("encoder_release_lm");
 	SDE_DEBUG_ENC(sde_enc, "\n");
 
 	for (i = 0; i < sde_enc->num_phys_encs; i++) {
@@ -4293,7 +4282,6 @@ static int _sde_encoder_reset_ctl_hw(struct drm_encoder *drm_enc)
 			SDE_EVT32(DRMID(drm_enc), rc, SDE_EVTLOG_ERROR);
 	}
 
-	SDE_ATRACE_END("encoder_release_lm");
 	return rc;
 }
 
@@ -4308,7 +4296,6 @@ void sde_encoder_kickoff(struct drm_encoder *drm_enc, bool is_error)
 		SDE_ERROR("invalid encoder\n");
 		return;
 	}
-	SDE_ATRACE_BEGIN("encoder_kickoff");
 	sde_enc = to_sde_encoder_virt(drm_enc);
 
 	SDE_DEBUG_ENC(sde_enc, "\n");
@@ -4335,7 +4322,6 @@ void sde_encoder_kickoff(struct drm_encoder *drm_enc, bool is_error)
 				nsecs_to_jiffies(ktime_to_ns(wakeup_time)));
 	}
 
-	SDE_ATRACE_END("encoder_kickoff");
 }
 
 int sde_encoder_helper_reset_mixers(struct sde_encoder_phys *phys_enc,
@@ -5008,9 +4994,7 @@ int sde_encoder_wait_for_event(struct drm_encoder *drm_enc,
 		};
 
 		if (phys && fn_wait) {
-			SDE_ATRACE_BEGIN("wait_for_completion_event");
 			ret = fn_wait(phys);
-			SDE_ATRACE_END("wait_for_completion_event");
 			if (ret)
 				return ret;
 		}

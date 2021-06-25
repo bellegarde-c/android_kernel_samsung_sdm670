@@ -28,7 +28,6 @@
 #include <linux/sde_rsc.h>
 
 #include "sde_power_handle.h"
-#include "sde_trace.h"
 #include "sde_dbg.h"
 
 static const char *data_bus_name[SDE_POWER_HANDLE_DBUS_ID_MAX] = {
@@ -441,10 +440,8 @@ static int _sde_power_data_bus_set_quota(
 	pdbus->curr_bw_uc_idx = new_uc_idx;
 	pdbus->ao_bw_uc_idx = new_uc_idx;
 
-	SDE_ATRACE_BEGIN("msm_bus_scale_req");
 	rc = msm_bus_scale_client_update_request(pdbus->data_bus_hdl,
 			new_uc_idx);
-	SDE_ATRACE_END("msm_bus_scale_req");
 
 	return rc;
 }
@@ -471,7 +468,6 @@ int sde_power_data_bus_set_quota(struct sde_power_handle *phandle,
 
 	pclient->ab[bus_client] = ab_quota;
 	pclient->ib[bus_client] = ib_quota;
-	trace_sde_perf_update_bus(bus_client, bus_id, ab_quota, ib_quota);
 
 	list_for_each_entry(client, &phandle->power_client_clist, list) {
 		for (i = 0; i < SDE_POWER_HANDLE_DATA_BUS_CLIENT_MAX; i++) {
