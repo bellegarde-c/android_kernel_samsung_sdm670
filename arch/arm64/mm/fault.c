@@ -652,7 +652,9 @@ asmlinkage void __exception do_mem_abort(unsigned long addr, unsigned int esr,
 	const struct fault_info *inf = esr_to_fault_info(esr);
 	struct siginfo info;
 
+#if defined(CONFIG_USER_RESET_DEBUG)
 	sec_debug_save_fault_info(esr, inf->name, addr, 0UL);
+#endif
 
 	if (!inf->fn(addr, esr, regs))
 		return;
@@ -711,9 +713,10 @@ asmlinkage void __exception do_sp_pc_abort(unsigned long addr,
 				    esr_get_class_string(esr), (void *)regs->pc,
 				    (void *)regs->sp);
 
+#if defined(CONFIG_USER_RESET_DEBUG)
 	sec_debug_save_fault_info(esr, esr_get_class_string(esr),
 			(unsigned long)regs->pc, (unsigned long)regs->sp);
-
+#endif
 	info.si_signo = SIGBUS;
 	info.si_errno = 0;
 	info.si_code  = BUS_ADRALN;
@@ -761,8 +764,9 @@ asmlinkage int __exception do_debug_exception(unsigned long addr_if_watchpoint,
 	struct siginfo info;
 	int rv;
 
+#if defined(CONFIG_USER_RESET_DEBUG)
 	sec_debug_save_fault_info(esr, inf->name, addr_if_watchpoint, 0UL);
-
+#endif
 	/*
 	 * Tell lockdep we disabled irqs in entry.S. Do nothing if they were
 	 * already disabled to preserve the last enabled/disabled addresses.
