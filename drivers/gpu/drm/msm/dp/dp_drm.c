@@ -92,7 +92,7 @@ static u32 choose_best_format(struct dp_display *dp,
 	else if (mode->flags & DRM_MODE_FLAG_SUPPORTS_YUV420)
 		return MSM_MODE_FLAG_COLOR_FORMAT_YCBCR420;
 
-	pr_err("Can't get available best display format\n");
+	pr_debug("Can't get available best display format\n");
 
 	return MSM_MODE_FLAG_COLOR_FORMAT_RGB444;
 }
@@ -190,7 +190,7 @@ static int dp_bridge_attach(struct drm_bridge *dp_bridge)
 	struct dp_bridge *bridge = to_dp_bridge(dp_bridge);
 
 	if (!dp_bridge) {
-		pr_err("Invalid params\n");
+		pr_debug("Invalid params\n");
 		return -EINVAL;
 	}
 
@@ -206,7 +206,7 @@ static void dp_bridge_pre_enable(struct drm_bridge *drm_bridge)
 	struct dp_display *dp;
 
 	if (!drm_bridge) {
-		pr_err("Invalid params\n");
+		pr_debug("Invalid params\n");
 		return;
 	}
 
@@ -216,21 +216,21 @@ static void dp_bridge_pre_enable(struct drm_bridge *drm_bridge)
 	/* By this point mode should have been validated through mode_fixup */
 	rc = dp->set_mode(dp, &bridge->dp_mode);
 	if (rc) {
-		pr_err("[%d] failed to perform a mode set, rc=%d\n",
+		pr_debug("[%d] failed to perform a mode set, rc=%d\n",
 		       bridge->id, rc);
 		return;
 	}
 
 	rc = dp->prepare(dp);
 	if (rc) {
-		pr_err("[%d] DP display prepare failed, rc=%d\n",
+		pr_debug("[%d] DP display prepare failed, rc=%d\n",
 		       bridge->id, rc);
 		return;
 	}
 
 	rc = dp->enable(dp);
 	if (rc) {
-		pr_err("[%d] DP display enable failed, rc=%d\n",
+		pr_debug("[%d] DP display enable failed, rc=%d\n",
 		       bridge->id, rc);
 		dp->unprepare(dp);
 	}
@@ -244,7 +244,7 @@ static void dp_bridge_enable(struct drm_bridge *drm_bridge)
 	struct dp_display *dp;
 
 	if (!drm_bridge) {
-		pr_err("Invalid params\n");
+		pr_debug("Invalid params\n");
 		return;
 	}
 
@@ -253,7 +253,7 @@ static void dp_bridge_enable(struct drm_bridge *drm_bridge)
 
 	rc = dp->post_enable(dp);
 	if (rc)
-		pr_err("[%d] DP display post enable failed, rc=%d\n",
+		pr_debug("[%d] DP display post enable failed, rc=%d\n",
 		       bridge->id, rc);
 }
 
@@ -264,7 +264,7 @@ static void dp_bridge_disable(struct drm_bridge *drm_bridge)
 	struct dp_display *dp;
 
 	if (!drm_bridge) {
-		pr_err("Invalid params\n");
+		pr_debug("Invalid params\n");
 		return;
 	}
 
@@ -272,7 +272,7 @@ static void dp_bridge_disable(struct drm_bridge *drm_bridge)
 	dp = bridge->display;
 
 	if (!dp) {
-		pr_err("dp is null\n");
+		pr_debug("dp is null\n");
 		return;
 	}
 
@@ -281,7 +281,7 @@ static void dp_bridge_disable(struct drm_bridge *drm_bridge)
 
 	rc = dp->pre_disable(dp);
 	if (rc) {
-		pr_err("[%d] DP display pre disable failed, rc=%d\n",
+		pr_debug("[%d] DP display pre disable failed, rc=%d\n",
 		       bridge->id, rc);
 	}
 }
@@ -293,7 +293,7 @@ static void dp_bridge_post_disable(struct drm_bridge *drm_bridge)
 	struct dp_display *dp;
 
 	if (!drm_bridge) {
-		pr_err("Invalid params\n");
+		pr_debug("Invalid params\n");
 		return;
 	}
 
@@ -302,14 +302,14 @@ static void dp_bridge_post_disable(struct drm_bridge *drm_bridge)
 
 	rc = dp->disable(dp);
 	if (rc) {
-		pr_err("[%d] DP display disable failed, rc=%d\n",
+		pr_debug("[%d] DP display disable failed, rc=%d\n",
 		       bridge->id, rc);
 		return;
 	}
 
 	rc = dp->unprepare(dp);
 	if (rc) {
-		pr_err("[%d] DP display unprepare failed, rc=%d\n",
+		pr_debug("[%d] DP display unprepare failed, rc=%d\n",
 		       bridge->id, rc);
 		return;
 	}
@@ -323,7 +323,7 @@ static void dp_bridge_mode_set(struct drm_bridge *drm_bridge,
 	struct dp_display *dp;
 
 	if (!drm_bridge || !mode || !adjusted_mode) {
-		pr_err("Invalid params\n");
+		pr_debug("Invalid params\n");
 		return;
 	}
 
@@ -344,7 +344,7 @@ static bool dp_bridge_mode_fixup(struct drm_bridge *drm_bridge,
 	struct dp_display *dp;
 
 	if (!drm_bridge || !mode || !adjusted_mode) {
-		pr_err("Invalid params\n");
+		pr_debug("Invalid params\n");
 		ret = false;
 		goto end;
 	}
@@ -383,7 +383,7 @@ int dp_connector_config_hdr(void *display,
 	struct dp_display *dp = display;
 
 	if (!display || !c_state) {
-		pr_err("invalid params\n");
+		pr_debug("invalid params\n");
 		return -EINVAL;
 	}
 
@@ -415,7 +415,7 @@ int dp_connector_get_mode_info(const struct drm_display_mode *drm_mode,
 	struct msm_display_topology *topology;
 
 	if (!drm_mode || !mode_info || !max_mixer_width) {
-		pr_err("invalid params\n");
+		pr_debug("invalid params\n");
 		return -EINVAL;
 	}
 
@@ -437,7 +437,7 @@ int dp_connector_get_info(struct msm_display_info *info, void *data)
 	struct dp_display *display = data;
 
 	if (!info || !display) {
-		pr_err("invalid params\n");
+		pr_debug("invalid params\n");
 		return -EINVAL;
 	}
 
@@ -464,13 +464,13 @@ bool dp_connector_mode_needs_full_range(void *data)
 	struct dp_panel_info *timing;
 
 	if (!display) {
-		pr_err("invalid input\n");
+		pr_debug("invalid input\n");
 		return false;
 	}
 
 	bridge = display->bridge;
 	if (!bridge) {
-		pr_err("invalid bridge data\n");
+		pr_debug("invalid bridge data\n");
 		return false;
 	}
 
@@ -494,13 +494,13 @@ bool dp_connector_mode_is_cea_mode(void *data)
 	bool is_ce_mode = false;
 
 	if (!display) {
-		pr_err("invalid input\n");
+		pr_debug("invalid input\n");
 		return false;
 	}
 
 	bridge = display->bridge;
 	if (!bridge) {
-		pr_err("invalid bridge data\n");
+		pr_debug("invalid bridge data\n");
 		return false;
 	}
 
@@ -531,14 +531,14 @@ enum sde_csc_type dp_connector_get_csc_type(struct drm_connector *conn,
 	struct drm_msm_ext_hdr_metadata *hdr_meta;
 
 	if (!display || !conn) {
-		pr_err("invalid input\n");
+		pr_debug("invalid input\n");
 		goto error;
 	}
 
 	c_state = to_sde_connector_state(conn->state);
 
 	if (!c_state) {
-		pr_err("invalid input\n");
+		pr_debug("invalid input\n");
 		goto error;
 	}
 
@@ -570,7 +570,7 @@ enum drm_connector_status dp_connector_detect(struct drm_connector *conn,
 	memset(&info, 0x0, sizeof(info));
 	rc = dp_connector_get_info(&info, display);
 	if (rc) {
-		pr_err("failed to get display info, rc=%d\n", rc);
+		pr_debug("failed to get display info, rc=%d\n", rc);
 		return connector_status_disconnected;
 	}
 
@@ -591,7 +591,7 @@ void dp_connector_post_open(void *display)
 	struct dp_display *dp;
 
 	if (!display) {
-		pr_err("invalid input\n");
+		pr_debug("invalid input\n");
 		return;
 	}
 
@@ -622,14 +622,14 @@ int dp_connector_get_modes(struct drm_connector *connector,
 	if (dp->is_connected) {
 		rc = dp->get_modes(dp, dp_mode);
 		if (!rc)
-			pr_err("failed to get DP sink modes, rc=%d\n", rc);
+			pr_debug("failed to get DP sink modes, rc=%d\n", rc);
 
 		if (dp_mode->timing.pixel_clk_khz) { /* valid DP mode */
 			memset(&drm_mode, 0x0, sizeof(drm_mode));
 			convert_to_drm_mode(dp_mode, &drm_mode);
 			m = drm_mode_duplicate(connector->dev, &drm_mode);
 			if (!m) {
-				pr_err("failed to add mode %ux%u\n",
+				pr_debug("failed to add mode %ux%u\n",
 				       drm_mode.hdisplay,
 				       drm_mode.vdisplay);
 				kfree(dp_mode);
@@ -640,7 +640,7 @@ int dp_connector_get_modes(struct drm_connector *connector,
 			drm_mode_probed_add(connector, m);
 		}
 	} else {
-		pr_err("No sink connected\n");
+		pr_debug("No sink connected\n");
 	}
 	kfree(dp_mode);
 
@@ -683,13 +683,13 @@ int dp_drm_bridge_init(void *data, struct drm_encoder *encoder)
 
 	rc = drm_bridge_attach(dev, &bridge->base);
 	if (rc) {
-		pr_err("failed to attach bridge, rc=%d\n", rc);
+		pr_debug("failed to attach bridge, rc=%d\n", rc);
 		goto error_free_bridge;
 	}
 
 	rc = display->request_irq(display);
 	if (rc) {
-		pr_err("request_irq failed, rc=%d\n", rc);
+		pr_debug("request_irq failed, rc=%d\n", rc);
 		goto error_free_bridge;
 	}
 
@@ -806,7 +806,7 @@ static struct secdp_display_timing secdp_supported_resolution[] = {
 
 bool secdp_check_dex_reconnect(void)
 {
-	pr_info("%d, %d\n", g_max_res_index, g_dex_max_res_index);
+	pr_debug("%d, %d\n", g_max_res_index, g_dex_max_res_index);
 	if (g_max_res_index == g_dex_max_res_index)
 		return false;
 
@@ -888,10 +888,10 @@ static bool secdp_check_supported_resolution(struct drm_display_mode *mode, stru
 
 	if (mode->type & DRM_MODE_TYPE_PREFERRED) {
 		prefer_ratio = secdp_get_aspect_ratio(mode);
-		pr_info("preferred_timing! %dx%d@%dhz, %s\n",
+		pr_debug("preferred_timing! %dx%d@%dhz, %s\n",
 			mode->hdisplay, mode->vdisplay, mode->vrefresh,
 			secdp_aspect_ratio_to_string(prefer_ratio));
-		pr_info("max resolution - mirror : %d, dex : %d\n", g_max_res_index, g_dex_max_res_index);
+		pr_debug("max resolution - mirror : %d, dex : %d\n", g_max_res_index, g_dex_max_res_index);
 		if (g_max_res_index >= 0) {
 			if (g_dex_max_res_index < 10) /* less than 1600 x 900 */
 			 	g_ignore_ratio = 1;
@@ -1003,7 +1003,7 @@ enum drm_mode_status dp_connector_mode_valid(struct drm_connector *connector,
 #endif
 
 	if (!mode || !display) {
-		pr_err("invalid params\n");
+		pr_debug("invalid params\n");
 		return MODE_ERROR;
 	}
 
@@ -1021,7 +1021,7 @@ enum drm_mode_status dp_connector_mode_valid(struct drm_connector *connector,
 		mode->flags &= ~DRM_MODE_FLAG_SUPPORTS_YUV420;
 
 	if (!(mode->flags & SDE_DRM_MODE_FLAG_FMT_MASK)) {
-		pr_err("unknown mode flag\n");
+		pr_debug("unknown mode flag\n");
 		return MODE_BAD;
 	}
 
@@ -1054,7 +1054,7 @@ enum drm_mode_status dp_connector_mode_valid(struct drm_connector *connector,
 	return dp_disp->validate_mode(dp_disp, pclk, mode->flags);
 #else
 	if (pclk > dp_disp->max_pclk_khz) {
-		pr_err("pclk error\n");
+		pr_debug("pclk error\n");
 		ret = MODE_BAD;
 		goto end;
 	}
@@ -1073,7 +1073,7 @@ enum drm_mode_status dp_connector_mode_valid(struct drm_connector *connector,
 	}
 
 end:
-	pr_info("%s@%dhz | %s | max_pclk: %d | cur_pclk: %d\n", mode->name,
+	pr_debug("%s@%dhz | %s | max_pclk: %d | cur_pclk: %d\n", mode->name,
 		drm_mode_vrefresh(mode), ret == MODE_BAD ? "NG" : "OK",
 		dp_disp->max_pclk_khz, mode->clock);
 	return ret;

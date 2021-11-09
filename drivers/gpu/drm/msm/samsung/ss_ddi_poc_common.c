@@ -591,7 +591,7 @@ static int poc_get_efs_s32(char *filename, int *value)
 	int fsize = 0, nread, ret = 0;
 
 	if (!filename || !value) {
-		pr_err("%s invalid parameter\n", __func__);
+		pr_debug("%s invalid parameter\n", __func__);
 		return -EINVAL;
 	}
 
@@ -602,9 +602,9 @@ static int poc_get_efs_s32(char *filename, int *value)
 	if (IS_ERR(filp)) {
 		ret = PTR_ERR(filp);
 		if (ret == -ENOENT)
-			pr_err("%s file(%s) not exist\n", __func__, filename);
+			pr_debug("%s file(%s) not exist\n", __func__, filename);
 		else
-			pr_info("%s file(%s) open error(ret %d)\n",
+			pr_debug("%s file(%s) open error(ret %d)\n",
 					__func__, filename, ret);
 		set_fs(old_fs);
 		return -EPOCEFS_NOENT;
@@ -614,7 +614,7 @@ static int poc_get_efs_s32(char *filename, int *value)
 		fsize = filp->f_path.dentry->d_inode->i_size;
 
 	if (fsize == 0) {
-		pr_err("%s invalid file(%s) size %d\n",
+		pr_debug("%s invalid file(%s) size %d\n",
 				__func__, filename, fsize);
 		ret = -EPOCEFS_EMPTY;
 		goto exit;
@@ -622,12 +622,12 @@ static int poc_get_efs_s32(char *filename, int *value)
 
 	nread = vfs_read(filp, (char __user *)value, 4, &filp->f_pos);
 	if (nread != 4) {
-		pr_err("%s failed to read (ret %d)\n", __func__, nread);
+		pr_debug("%s failed to read (ret %d)\n", __func__, nread);
 		ret = -EPOCEFS_READ;
 		goto exit;
 	}
 
-	pr_info("%s %s(size %d) : %d\n", __func__, filename, fsize, *value);
+	pr_debug("%s %s(size %d) : %d\n", __func__, filename, fsize, *value);
 
 exit:
 	filp_close(filp, current->files);
@@ -646,7 +646,7 @@ static int poc_get_efs_image_index_org(char *filename, int *value)
 	u8 buf[128];
 
 	if (!filename || !value) {
-		pr_err("%s invalid parameter\n", __func__);
+		pr_debug("%s invalid parameter\n", __func__);
 		return -EINVAL;
 	}
 
@@ -657,9 +657,9 @@ static int poc_get_efs_image_index_org(char *filename, int *value)
 	if (IS_ERR(filp)) {
 		ret = PTR_ERR(filp);
 		if (ret == -ENOENT)
-			pr_err("%s file(%s) not exist\n", __func__, filename);
+			pr_debug("%s file(%s) not exist\n", __func__, filename);
 		else
-			pr_info("%s file(%s) open error(ret %d)\n",
+			pr_debug("%s file(%s) open error(ret %d)\n",
 					__func__, filename, ret);
 		set_fs(old_fs);
 		return -EPOCEFS_NOENT;
@@ -669,7 +669,7 @@ static int poc_get_efs_image_index_org(char *filename, int *value)
 		fsize = filp->f_path.dentry->d_inode->i_size;
 
 	if (fsize == 0 || fsize > ARRAY_SIZE(buf)) {
-		pr_err("%s invalid file(%s) size %d\n",
+		pr_debug("%s invalid file(%s) size %d\n",
 				__func__, filename, fsize);
 		ret = -EPOCEFS_EMPTY;
 		goto exit;
@@ -678,19 +678,19 @@ static int poc_get_efs_image_index_org(char *filename, int *value)
 	memset(buf, 0, sizeof(buf));
 	nread = vfs_read(filp, (char __user *)buf, fsize, &filp->f_pos);
 	if (nread != fsize) {
-		pr_err("%s failed to read (ret %d)\n", __func__, nread);
+		pr_debug("%s failed to read (ret %d)\n", __func__, nread);
 		ret = -EPOCEFS_READ;
 		goto exit;
 	}
 
 	rc = sscanf(buf, "%c %d %d", &binary, &image_index, &chksum);
 	if (rc != 3) {
-		pr_err("%s failed to sscanf %d\n", __func__, rc);
+		pr_debug("%s failed to sscanf %d\n", __func__, rc);
 		ret = -EINVAL;
 		goto exit;
 	}
 
-	pr_info("%s %s(size %d) : %c %d %d\n",
+	pr_debug("%s %s(size %d) : %c %d %d\n",
 			__func__, filename, fsize, binary, image_index, chksum);
 
 	*value = image_index;
@@ -711,7 +711,7 @@ static int poc_get_efs_image_index(char *filename, int *value)
 	u8 buf[128];
 
 	if (!filename || !value) {
-		pr_err("%s invalid parameter\n", __func__);
+		pr_debug("%s invalid parameter\n", __func__);
 		return -EINVAL;
 	}
 
@@ -722,9 +722,9 @@ static int poc_get_efs_image_index(char *filename, int *value)
 	if (IS_ERR(filp)) {
 		ret = PTR_ERR(filp);
 		if (ret == -ENOENT)
-			pr_err("%s file(%s) not exist\n", __func__, filename);
+			pr_debug("%s file(%s) not exist\n", __func__, filename);
 		else
-			pr_info("%s file(%s) open error(ret %d)\n",
+			pr_debug("%s file(%s) open error(ret %d)\n",
 					__func__, filename, ret);
 		set_fs(old_fs);
 		return -EPOCEFS_NOENT;
@@ -734,7 +734,7 @@ static int poc_get_efs_image_index(char *filename, int *value)
 		fsize = filp->f_path.dentry->d_inode->i_size;
 
 	if (fsize == 0 || fsize > ARRAY_SIZE(buf)) {
-		pr_err("%s invalid file(%s) size %d\n",
+		pr_debug("%s invalid file(%s) size %d\n",
 				__func__, filename, fsize);
 		ret = -EPOCEFS_EMPTY;
 		goto exit;
@@ -743,19 +743,19 @@ static int poc_get_efs_image_index(char *filename, int *value)
 	memset(buf, 0, sizeof(buf));
 	nread = vfs_read(filp, (char __user *)buf, fsize, &filp->f_pos);
 	if (nread != fsize) {
-		pr_err("%s failed to read (ret %d)\n", __func__, nread);
+		pr_debug("%s failed to read (ret %d)\n", __func__, nread);
 		ret = -EPOCEFS_READ;
 		goto exit;
 	}
 
 	rc = sscanf(buf, "%d,%d", &image_index, &seek);
 	if (rc != 2) {
-		pr_err("%s failed to sscanf %d\n", __func__, rc);
+		pr_debug("%s failed to sscanf %d\n", __func__, rc);
 		ret = -EINVAL;
 		goto exit;
 	}
 
-	pr_info("%s %s(size %d) : %d %d\n",
+	pr_debug("%s %s(size %d) : %d %d\n",
 			__func__, filename, fsize, image_index, seek);
 
 	*value = image_index;

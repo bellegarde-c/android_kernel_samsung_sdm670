@@ -154,7 +154,7 @@ static ssize_t dp_debug_write_edid(struct file *file,
 		t[char_to_nib] = '\0';
 
 		if (kstrtoint(t, 16, &d)) {
-			pr_err("kstrtoint error\n");
+			pr_debug("kstrtoint error\n");
 			goto bail;
 		}
 
@@ -212,7 +212,7 @@ static ssize_t dp_debug_write_dpcd(struct file *file,
 	offset_ch[4] = '\0';
 
 	if (kstrtoint(offset_ch, 16, &offset)) {
-		pr_err("offset kstrtoint error\n");
+		pr_debug("offset kstrtoint error\n");
 		goto bail;
 	}
 
@@ -220,7 +220,7 @@ static ssize_t dp_debug_write_dpcd(struct file *file,
 		goto bail;
 
 	if (offset == 0xFFFF) {
-		pr_err("clearing dpcd\n");
+		pr_debug("clearing dpcd\n");
 		memset(debug->dpcd, 0, debug->dpcd_size);
 		goto bail;
 	}
@@ -242,7 +242,7 @@ static ssize_t dp_debug_write_dpcd(struct file *file,
 		t[char_to_nib] = '\0';
 
 		if (kstrtoint(t, 16, &d)) {
-			pr_err("kstrtoint error\n");
+			pr_debug("kstrtoint error\n");
 			goto bail;
 		}
 
@@ -386,7 +386,7 @@ static ssize_t dp_debug_bw_code_write(struct file *file,
 		return 0;
 
 	if (!is_link_rate_valid(max_bw_code)) {
-		pr_err("Unsupported bw code %d\n", max_bw_code);
+		pr_debug("Unsupported bw code %d\n", max_bw_code);
 		return len;
 	}
 	debug->panel->max_bw_code = max_bw_code;
@@ -492,7 +492,7 @@ static ssize_t dp_debug_read_connected(struct file *file,
 static int dp_debug_check_buffer_overflow(int rc, int *max_size, int *len)
 {
 	if (rc >= *max_size) {
-		pr_err("buffer overflow\n");
+		pr_debug("buffer overflow\n");
 		return -EINVAL;
 	}
 	*len += rc;
@@ -512,7 +512,7 @@ static ssize_t dp_debug_read_edid_modes(struct file *file,
 	struct drm_display_mode *mode;
 
 	if (!debug) {
-		pr_err("invalid data\n");
+		pr_debug("invalid data\n");
 		rc = -ENODEV;
 		goto error;
 	}
@@ -520,7 +520,7 @@ static ssize_t dp_debug_read_edid_modes(struct file *file,
 	connector = *debug->connector;
 
 	if (!connector) {
-		pr_err("connector is NULL\n");
+		pr_debug("connector is NULL\n");
 		rc = -EINVAL;
 		goto error;
 	}
@@ -746,7 +746,7 @@ static ssize_t dp_debug_write_hdr(struct file *file,
 			&c_state->hdr_meta.min_luminance,
 			&c_state->hdr_meta.max_content_light_level,
 			&c_state->hdr_meta.max_average_light_level) != 15) {
-		pr_err("invalid input\n");
+		pr_debug("invalid input\n");
 		len = -EINVAL;
 	}
 
@@ -769,7 +769,7 @@ static ssize_t dp_debug_read_hdr(struct file *file,
 	struct drm_msm_ext_hdr_metadata *hdr;
 
 	if (!debug) {
-		pr_err("invalid data\n");
+		pr_debug("invalid data\n");
 		rc = -ENODEV;
 		goto error;
 	}
@@ -777,7 +777,7 @@ static ssize_t dp_debug_read_hdr(struct file *file,
 	connector = *debug->connector;
 
 	if (!connector) {
-		pr_err("connector is NULL\n");
+		pr_debug("connector is NULL\n");
 		rc = -EINVAL;
 		goto error;
 	}
@@ -1138,7 +1138,7 @@ static int dp_debug_init(struct dp_debug *dp_debug)
 			rc = -EINVAL;
 		else
 			rc = PTR_ERR(dir);
-		pr_err("[%s] debugfs create dir failed, rc = %d\n",
+		pr_debug("[%s] debugfs create dir failed, rc = %d\n",
 		       DEBUG_NAME, rc);
 		goto error;
 	}
@@ -1149,7 +1149,7 @@ static int dp_debug_init(struct dp_debug *dp_debug)
 				debug, &dp_debug_fops);
 	if (IS_ERR_OR_NULL(file)) {
 		rc = PTR_ERR(file);
-		pr_err("[%s] debugfs create file failed, rc=%d\n",
+		pr_debug("[%s] debugfs create file failed, rc=%d\n",
 		       DEBUG_NAME, rc);
 		goto error_remove_dir;
 	}
@@ -1158,7 +1158,7 @@ static int dp_debug_init(struct dp_debug *dp_debug)
 					debug, &edid_modes_fops);
 	if (IS_ERR_OR_NULL(file)) {
 		rc = PTR_ERR(file);
-		pr_err("[%s] debugfs create edid_modes failed, rc=%d\n",
+		pr_debug("[%s] debugfs create edid_modes failed, rc=%d\n",
 		       DEBUG_NAME, rc);
 		goto error_remove_dir;
 	}
@@ -1167,7 +1167,7 @@ static int dp_debug_init(struct dp_debug *dp_debug)
 					debug, &hpd_fops);
 	if (IS_ERR_OR_NULL(file)) {
 		rc = PTR_ERR(file);
-		pr_err("[%s] debugfs hpd failed, rc=%d\n",
+		pr_debug("[%s] debugfs hpd failed, rc=%d\n",
 			DEBUG_NAME, rc);
 		goto error_remove_dir;
 	}
@@ -1176,7 +1176,7 @@ static int dp_debug_init(struct dp_debug *dp_debug)
 					debug, &connected_fops);
 	if (IS_ERR_OR_NULL(file)) {
 		rc = PTR_ERR(file);
-		pr_err("[%s] debugfs connected failed, rc=%d\n",
+		pr_debug("[%s] debugfs connected failed, rc=%d\n",
 			DEBUG_NAME, rc);
 		goto error_remove_dir;
 	}
@@ -1185,7 +1185,7 @@ static int dp_debug_init(struct dp_debug *dp_debug)
 			debug, &bw_code_fops);
 	if (IS_ERR_OR_NULL(file)) {
 		rc = PTR_ERR(file);
-		pr_err("[%s] debugfs max_bw_code failed, rc=%d\n",
+		pr_debug("[%s] debugfs max_bw_code failed, rc=%d\n",
 		       DEBUG_NAME, rc);
 	}
 
@@ -1193,7 +1193,7 @@ static int dp_debug_init(struct dp_debug *dp_debug)
 			debug, &exe_mode_fops);
 	if (IS_ERR_OR_NULL(file)) {
 		rc = PTR_ERR(file);
-		pr_err("[%s] debugfs register failed, rc=%d\n",
+		pr_debug("[%s] debugfs register failed, rc=%d\n",
 		       DEBUG_NAME, rc);
 	}
 
@@ -1201,7 +1201,7 @@ static int dp_debug_init(struct dp_debug *dp_debug)
 					debug, &edid_fops);
 	if (IS_ERR_OR_NULL(file)) {
 		rc = PTR_ERR(file);
-		pr_err("[%s] debugfs edid failed, rc=%d\n",
+		pr_debug("[%s] debugfs edid failed, rc=%d\n",
 			DEBUG_NAME, rc);
 		goto error_remove_dir;
 	}
@@ -1210,7 +1210,7 @@ static int dp_debug_init(struct dp_debug *dp_debug)
 					debug, &dpcd_fops);
 	if (IS_ERR_OR_NULL(file)) {
 		rc = PTR_ERR(file);
-		pr_err("[%s] debugfs dpcd failed, rc=%d\n",
+		pr_debug("[%s] debugfs dpcd failed, rc=%d\n",
 			DEBUG_NAME, rc);
 		goto error_remove_dir;
 	}
@@ -1219,7 +1219,7 @@ static int dp_debug_init(struct dp_debug *dp_debug)
 			debug, &tpg_fops);
 	if (IS_ERR_OR_NULL(file)) {
 		rc = PTR_ERR(file);
-		pr_err("[%s] debugfs tpg failed, rc=%d\n",
+		pr_debug("[%s] debugfs tpg failed, rc=%d\n",
 		       DEBUG_NAME, rc);
 		goto error_remove_dir;
 	}
@@ -1229,7 +1229,7 @@ static int dp_debug_init(struct dp_debug *dp_debug)
 
 	if (IS_ERR_OR_NULL(file)) {
 		rc = PTR_ERR(file);
-		pr_err("[%s] debugfs hdr failed, rc=%d\n",
+		pr_debug("[%s] debugfs hdr failed, rc=%d\n",
 			DEBUG_NAME, rc);
 		goto error_remove_dir;
 	}
@@ -1239,7 +1239,7 @@ static int dp_debug_init(struct dp_debug *dp_debug)
 
 	if (IS_ERR_OR_NULL(file)) {
 		rc = PTR_ERR(file);
-		pr_err("[%s] debugfs sim failed, rc=%d\n",
+		pr_debug("[%s] debugfs sim failed, rc=%d\n",
 			DEBUG_NAME, rc);
 		goto error_remove_dir;
 	}
@@ -1249,7 +1249,7 @@ static int dp_debug_init(struct dp_debug *dp_debug)
 
 	if (IS_ERR_OR_NULL(file)) {
 		rc = PTR_ERR(file);
-		pr_err("[%s] debugfs attention failed, rc=%d\n",
+		pr_debug("[%s] debugfs attention failed, rc=%d\n",
 			DEBUG_NAME, rc);
 		goto error_remove_dir;
 	}
@@ -1259,7 +1259,7 @@ static int dp_debug_init(struct dp_debug *dp_debug)
 
 	if (IS_ERR_OR_NULL(file)) {
 		rc = PTR_ERR(file);
-		pr_err("[%s] debugfs dump failed, rc=%d\n",
+		pr_debug("[%s] debugfs dump failed, rc=%d\n",
 			DEBUG_NAME, rc);
 		goto error_remove_dir;
 	}
@@ -1292,7 +1292,7 @@ struct dp_debug *dp_debug_get(struct device *dev, struct dp_panel *panel,
 	struct dp_debug *dp_debug;
 
 	if (!dev || !panel || !usbpd || !link || !catalog) {
-		pr_err("invalid input\n");
+		pr_debug("invalid input\n");
 		rc = -EINVAL;
 		goto error;
 	}
