@@ -469,7 +469,7 @@ static void _sde_edid_extract_audio_data_blocks(
 #if defined(CONFIG_SEC_DISPLAYPORT)
 	in_buf = (u8 *)edid_ctrl->edid;
 	if (in_buf[3] & (1<<6)) {
-		pr_info("%s: default audio format\n", __func__);
+		pr_debug("%s: default audio format\n", __func__);
 		edid_ctrl->audio_channel_info |= 2;
 	}
 #endif
@@ -531,7 +531,7 @@ static void _sde_edid_extract_audio_data_blocks(
 #if defined(CONFIG_SEC_DISPLAYPORT)
 	edid_ctrl->audio_channel_info |= (bit_rate << 16);
 	edid_ctrl->audio_channel_info |= audio_ch;
-	pr_info("%s: Displayport Audio info : 0x%x\n", __func__,
+	pr_debug("%s: Displayport Audio info : 0x%x\n", __func__,
 			edid_ctrl->audio_channel_info);
 #endif
 	SDE_EDID_DEBUG("%s -", __func__);

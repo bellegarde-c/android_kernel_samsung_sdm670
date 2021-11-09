@@ -141,7 +141,7 @@ static int auxdev_open(struct inode *inode, struct file *file)
 	file->private_data = aux_dev;
 	g_fw_update_status = true;
 
-	pr_info("aux node open\n");
+	pr_debug("aux node open\n");
 
 	return 0;
 }
@@ -274,7 +274,7 @@ static int auxdev_release(struct inode *inode, struct file *file)
 	struct secdp_aux_dev *aux_dev = file->private_data;
 
 	g_fw_update_status = false;
-	pr_info("aux node release\n");
+	pr_debug("aux node release\n");
 
 	kref_put(&aux_dev->refcount, release_secdp_aux_dev);
 	return 0;
@@ -294,7 +294,7 @@ static long auxdev_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 		return -EINVAL;
 
 	size = sizeof(struct ioctl_auxdev_info);
-	pr_info("cmd: %s\n", auxdev_ioctl_cmd_to_string(cmd));
+	pr_debug("cmd: %s\n", auxdev_ioctl_cmd_to_string(cmd));
 
 	switch (cmd) {
 	case IOCTL_DP_AUXCMD_TYPE:
@@ -304,7 +304,7 @@ static long auxdev_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 			break;
 		}
 		aux_dev->cmd_type = info.cmd_type;
-		pr_info("auxcmd_type: %s\n", auxcmd_type_to_string(aux_dev->cmd_type));
+		pr_debug("auxcmd_type: %s\n", auxcmd_type_to_string(aux_dev->cmd_type));
 		break;
 	case IOCTL_DP_HPD_STATUS:
 		hpd = aux_dev->secdp_get_hpd_status();
@@ -352,7 +352,7 @@ void secdp_aux_unregister_devnode(struct secdp_aux_dev *aux_dev)
 		device_destroy(secdp_aux_dev_class,
 			       MKDEV(drm_dev_major, minor));
 
-	pr_info("secdp_aux_dev: aux unregistering\n");
+	pr_debug("secdp_aux_dev: aux unregistering\n");
 	kref_put(&aux_dev->refcount, release_secdp_aux_dev);
 }
 
