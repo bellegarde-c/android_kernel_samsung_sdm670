@@ -148,14 +148,14 @@ void ss_dump_xlog(void)
 {
 	char xlog_buf[SS_XLOG_BUF_MAX] = {0,};
 
-	pr_info("============ Start Samsung XLOG ============\n");
+	pr_debug("============ Start Samsung XLOG ============\n");
 
 	while (__ss_dump_xlog_calc_range()) {
 		ss_xlog_dump_entry(xlog_buf, SS_XLOG_BUF_MAX);
-		pr_info("%s", xlog_buf);
+		pr_debug("%s", xlog_buf);
 	}
 
-	pr_info("============ Finish Samsung XLOG ============\n");
+	pr_debug("============ Finish Samsung XLOG ============\n");
 }
 
 static ssize_t ss_xlog_dump_read(struct file *file, char __user *buff,
@@ -168,7 +168,7 @@ static ssize_t ss_xlog_dump_read(struct file *file, char __user *buff,
 		len = ss_xlog_dump_entry(xlog_buf, SS_XLOG_BUF_MAX);
 
 		if (len < 0 || len > count) {
-			pr_err("len is more than user buffer size");
+			pr_debug("len is more than user buffer size");
 			return 0;
 		}
 
@@ -226,7 +226,7 @@ void ss_store_xlog_panic_dbg(void)
 		last--;
 	}
 end:
-	pr_info("%s:%s\n", __func__, err_buf);
+	pr_debug("%s:%s\n", __func__, err_buf);
 /*
  * #ifdef CONFIG_SEC_DEBUG
  *	sec_debug_store_additional_dbg(DBG_2_DISPLAY_ERR, 0, "%s", err_buf);

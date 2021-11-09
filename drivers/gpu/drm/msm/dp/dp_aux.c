@@ -122,7 +122,7 @@ static u32 dp_aux_write(struct dp_aux_private *aux,
 	 * limit buf length to 128 bytes here
 	 */
 	if (len > aux_cmd_fifo_len) {
-		pr_err("buf len error\n");
+		pr_debug("buf len error\n");
 		return 0;
 	}
 
@@ -175,20 +175,20 @@ static int dp_aux_cmd_fifo_tx(struct dp_aux_private *aux,
 
 	len = dp_aux_write(aux, msg);
 	if (len == 0) {
-		pr_err("DP AUX write failed\n");
+		pr_debug("DP AUX write failed\n");
 		return -EINVAL;
 	}
 
 	timeout = wait_for_completion_timeout(&aux->comp, aux_timeout_ms);
 	if (!timeout) {
-		pr_err("aux %s timeout\n", (aux->read ? "read" : "write"));
+		pr_debug("aux %s timeout\n", (aux->read ? "read" : "write"));
 		return -ETIMEDOUT;
 	}
 
 	if (aux->aux_error_num == DP_AUX_ERR_NONE) {
 		ret = len;
 	} else {
-		pr_err_ratelimited("aux err: %s\n",
+		pr_debug_ratelimited("aux err: %s\n",
 			dp_aux_get_error(aux->aux_error_num));
 
 		ret = -EINVAL;
@@ -298,7 +298,7 @@ static void dp_aux_isr(struct dp_aux *dp_aux)
 	struct dp_aux_private *aux;
 
 	if (!dp_aux) {
-		pr_err("invalid input\n");
+		pr_debug("invalid input\n");
 		return;
 	}
 
@@ -320,7 +320,7 @@ static void dp_aux_reconfig(struct dp_aux *dp_aux)
 	struct dp_aux_private *aux;
 
 	if (!dp_aux) {
-		pr_err("invalid input\n");
+		pr_debug("invalid input\n");
 		return;
 	}
 
@@ -336,7 +336,7 @@ static void dp_aux_abort_transaction(struct dp_aux *dp_aux)
 	struct dp_aux_private *aux;
 
 	if (!dp_aux) {
-		pr_err("invalid input\n");
+		pr_debug("invalid input\n");
 		return;
 	}
 
@@ -464,7 +464,7 @@ static int dp_aux_transfer_ready(struct dp_aux_private *aux,
 	/* msg sanity check */
 	if ((aux->native && (msg->size > aux_cmd_native_max)) ||
 		(msg->size > aux_cmd_i2c_max)) {
-		pr_err("%s: invalid msg: size(%zu), request(%x)\n",
+		pr_debug("%s: invalid msg: size(%zu), request(%x)\n",
 			__func__, msg->size, msg->request);
 		ret = -EINVAL;
 		goto error;
@@ -517,7 +517,7 @@ static ssize_t dp_aux_transfer_debug(struct drm_dp_aux *drm_aux,
 			reinit_completion(&aux->comp);
 			timeout = wait_for_completion_timeout(&aux->comp, HZ);
 			if (!timeout)
-				pr_err("aux timeout for 0x%x\n", msg->address);
+				pr_debug("aux timeout for 0x%x\n", msg->address);
 
 			aux->dp_aux.reg = 0xFFFF;
 
@@ -579,7 +579,7 @@ static ssize_t dp_aux_transfer(struct drm_dp_aux *drm_aux,
 	if ((ret < 0) && !atomic_read(&aux->aborted)) {
 #ifdef CONFIG_SEC_DISPLAYPORT
 		if (!secdp_get_cable_status()) {
-			pr_info("cable is out\n");
+			pr_debug("cable is out\n");
 			goto unlock_exit;
 		}
 #endif
@@ -630,7 +630,7 @@ static void dp_aux_init(struct dp_aux *dp_aux, struct dp_aux_cfg *aux_cfg)
 	struct dp_aux_private *aux;
 
 	if (!dp_aux || !aux_cfg) {
-		pr_err("invalid input\n");
+		pr_debug("invalid input\n");
 		return;
 	}
 
@@ -651,7 +651,7 @@ static void dp_aux_deinit(struct dp_aux *dp_aux)
 	struct dp_aux_private *aux;
 
 	if (!dp_aux) {
-		pr_err("invalid input\n");
+		pr_debug("invalid input\n");
 		return;
 	}
 
@@ -672,7 +672,7 @@ static int dp_aux_register(struct dp_aux *dp_aux)
 	int ret = 0;
 
 	if (!dp_aux) {
-		pr_err("invalid input\n");
+		pr_debug("invalid input\n");
 		ret = -EINVAL;
 		goto exit;
 	}
@@ -684,7 +684,7 @@ static int dp_aux_register(struct dp_aux *dp_aux)
 	aux->drm_aux.transfer = dp_aux_transfer;
 	ret = drm_dp_aux_register(&aux->drm_aux);
 	if (ret) {
-		pr_err("%s: failed to register drm aux: %d\n", __func__, ret);
+		pr_debug("%s: failed to register drm aux: %d\n", __func__, ret);
 		goto exit;
 	}
 	dp_aux->drm_aux = &aux->drm_aux;
@@ -700,7 +700,7 @@ static void dp_aux_deregister(struct dp_aux *dp_aux)
 	struct dp_aux_private *aux;
 
 	if (!dp_aux) {
-		pr_err("invalid input\n");
+		pr_debug("invalid input\n");
 		return;
 	}
 
@@ -750,7 +750,7 @@ static void dp_aux_dpcd_updated(struct dp_aux *dp_aux)
 	struct dp_aux_private *aux;
 
 	if (!dp_aux) {
-		pr_err("invalid input\n");
+		pr_debug("invalid input\n");
 		return;
 	}
 
@@ -765,7 +765,7 @@ static void dp_aux_set_sim_mode(struct dp_aux *dp_aux, bool en,
 	struct dp_aux_private *aux;
 
 	if (!dp_aux) {
-		pr_err("invalid input\n");
+		pr_debug("invalid input\n");
 		return;
 	}
 
@@ -788,7 +788,7 @@ struct dp_aux *dp_aux_get(struct device *dev, struct dp_catalog_aux *catalog,
 	struct dp_aux *dp_aux;
 
 	if (!catalog || !aux_cfg) {
-		pr_err("invalid input\n");
+		pr_debug("invalid input\n");
 		rc = -ENODEV;
 		goto error;
 	}

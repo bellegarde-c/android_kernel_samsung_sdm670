@@ -852,7 +852,7 @@ int sde_plane_wait_input_fence(struct drm_plane *plane, uint32_t wait_ms)
 				{
 					struct fence *tout_fence = input_fence;
 
-					pr_info("DPCI Logging for fence timeout\n");
+					pr_debug("DPCI Logging for fence timeout\n");
 					ss_inc_ftout_debug(tout_fence->ops->get_timeline_name(tout_fence));
 				}
 #endif
