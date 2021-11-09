@@ -876,7 +876,7 @@ static int sde_hw_intr_enable_irq(struct sde_hw_intr *intr, int irq_idx)
 		return -EINVAL;
 
 	if (irq_idx < 0 || irq_idx >= ARRAY_SIZE(sde_irq_map)) {
-		pr_err("invalid IRQ index: [%d]\n", irq_idx);
+		pr_debug("invalid IRQ index: [%d]\n", irq_idx);
 		return -EINVAL;
 	}
 
@@ -922,7 +922,7 @@ static int sde_hw_intr_disable_irq_nolock(struct sde_hw_intr *intr, int irq_idx)
 		return -EINVAL;
 
 	if (irq_idx < 0 || irq_idx >= ARRAY_SIZE(sde_irq_map)) {
-		pr_err("invalid IRQ index: [%d]\n", irq_idx);
+		pr_debug("invalid IRQ index: [%d]\n", irq_idx);
 		return -EINVAL;
 	}
 
@@ -962,7 +962,7 @@ static int sde_hw_intr_disable_irq(struct sde_hw_intr *intr, int irq_idx)
 		return -EINVAL;
 
 	if (irq_idx < 0 || irq_idx >= ARRAY_SIZE(sde_irq_map)) {
-		pr_err("invalid IRQ index: [%d]\n", irq_idx);
+		pr_debug("invalid IRQ index: [%d]\n", irq_idx);
 		return -EINVAL;
 	}
 
@@ -1070,7 +1070,7 @@ static void sde_hw_intr_clear_intr_status_force_mask(struct sde_hw_intr *intr,
 		return;
 
 	if (irq_idx >= ARRAY_SIZE(sde_irq_map) || irq_idx < 0) {
-		pr_err("invalid IRQ index: [%d]\n", irq_idx);
+		pr_debug("invalid IRQ index: [%d]\n", irq_idx);
 		return;
 	}
 
@@ -1121,7 +1121,7 @@ static u32 sde_hw_intr_get_intr_status_nolock(struct sde_hw_intr *intr,
 		return 0;
 
 	if (irq_idx >= ARRAY_SIZE(sde_irq_map) || irq_idx < 0) {
-		pr_err("invalid IRQ index: [%d]\n", irq_idx);
+		pr_debug("invalid IRQ index: [%d]\n", irq_idx);
 		return 0;
 	}
 
@@ -1150,7 +1150,7 @@ static u32 sde_hw_intr_get_interrupt_status(struct sde_hw_intr *intr,
 		return 0;
 
 	if (irq_idx >= ARRAY_SIZE(sde_irq_map) || irq_idx < 0) {
-		pr_err("invalid IRQ index: [%d]\n", irq_idx);
+		pr_debug("invalid IRQ index: [%d]\n", irq_idx);
 		return 0;
 	}
 
@@ -1183,7 +1183,7 @@ static u32 sde_hw_intr_get_intr_status_nomask(struct sde_hw_intr *intr,
 		return 0;
 
 	if (irq_idx >= ARRAY_SIZE(sde_irq_map) || irq_idx < 0) {
-		pr_err("invalid IRQ index: [%d]\n", irq_idx);
+		pr_debug("invalid IRQ index: [%d]\n", irq_idx);
 		return 0;
 	}
 

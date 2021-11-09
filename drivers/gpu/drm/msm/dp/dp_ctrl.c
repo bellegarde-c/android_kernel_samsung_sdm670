@@ -114,7 +114,7 @@ static void dp_ctrl_abort(struct dp_ctrl *dp_ctrl)
 	struct dp_ctrl_private *ctrl;
 
 	if (!dp_ctrl) {
-		pr_err("Invalid input data\n");
+		pr_debug("Invalid input data\n");
 		return;
 	}
 
@@ -134,14 +134,14 @@ static void dp_ctrl_push_idle(struct dp_ctrl *dp_ctrl)
 	struct dp_ctrl_private *ctrl;
 
 	if (!dp_ctrl) {
-		pr_err("Invalid input data\n");
+		pr_debug("Invalid input data\n");
 		return;
 	}
 
 	ctrl = container_of(dp_ctrl, struct dp_ctrl_private, dp_ctrl);
 
 	if (!ctrl->power_on) {
-		pr_err("CTRL off, return\n");
+		pr_debug("CTRL off, return\n");
 		return;
 	}
 
@@ -784,7 +784,7 @@ static int dp_ctrl_wait4video_ready(struct dp_ctrl_private *ctrl)
 
 	ret = wait_for_completion_timeout(&ctrl->video_comp, HZ / 2);
 	if (ret <= 0) {
-		pr_err("Link Train timedout\n");
+		pr_debug("Link Train timedout\n");
 		ret = -EINVAL;
 	}
 
@@ -853,7 +853,7 @@ static int dp_ctrl_read_link_status(struct dp_ctrl_private *ctrl,
 		len = drm_dp_dpcd_read_link_status(ctrl->aux->drm_aux,
 			link_status);
 		if (len != DP_LINK_STATUS_SIZE) {
-			pr_err("DP link status read failed, err: %d\n", len);
+			pr_debug("DP link status read failed, err: %d\n", len);
 			ret = len;
 			break;
 		}
@@ -908,7 +908,7 @@ static int dp_ctrl_link_train_1(struct dp_ctrl_private *ctrl)
 		}
 
 		if (ctrl->link->phy_params.v_level == DP_LINK_VOLTAGE_MAX) {
-			pr_err_ratelimited("max v_level reached\n");
+			pr_debug_ratelimited("max v_level reached\n");
 			ret = -EAGAIN;
 			break;
 		}
@@ -916,7 +916,7 @@ static int dp_ctrl_link_train_1(struct dp_ctrl_private *ctrl)
 		if (old_v_level == ctrl->link->phy_params.v_level) {
 			tries++;
 			if (tries >= maximum_retries) {
-				pr_err("max tries reached\n");
+				pr_debug("max tries reached\n");
 				ret = -ETIMEDOUT;
 				break;
 			}
@@ -1056,7 +1056,7 @@ static int dp_ctrl_link_train(struct dp_ctrl_private *ctrl)
 
 #ifdef CONFIG_SEC_DISPLAYPORT
 	if (!secdp_get_cable_status()) {
-		pr_info("cable is out\n");
+		pr_debug("cable is out\n");
 		return -EIO;
 	}
 
@@ -1086,26 +1086,26 @@ static int dp_ctrl_link_train(struct dp_ctrl_private *ctrl)
 
 	ret = dp_ctrl_link_train_1(ctrl);
 	if (ret) {
-		pr_err("link training #1 failed\n");
+		pr_debug("link training #1 failed\n");
 		goto end;
 	}
 
 	/* print success info as this is a result of user initiated action */
-	pr_info("link training #1 successful\n");
+	pr_debug("link training #1 successful\n");
 
 	ret = dp_ctrl_link_training_2(ctrl);
 	if (ret) {
-		pr_err("link training #2 failed\n");
+		pr_debug("link training #2 failed\n");
 		goto end;
 	}
 
 	/* print success info as this is a result of user initiated action */
-	pr_info("link training #2 successful\n");
+	pr_debug("link training #2 successful\n");
 
 end:
 #ifdef CONFIG_SEC_DISPLAYPORT
 	if (!secdp_get_cable_status()) {
-		pr_info("cable is out <2>\n");
+		pr_debug("cable is out <2>\n");
 		return -EIO;
 	}
 #endif
@@ -1193,7 +1193,7 @@ static void dp_ctrl_set_clock_rate(struct dp_ctrl_private *ctrl,
 	if (num)
 		cfg->rate = rate;
 	else
-		pr_err("%s clock could not be set with rate %d\n", name, rate);
+		pr_debug("%s clock could not be set with rate %d\n", name, rate);
 }
 
 static int dp_ctrl_enable_mainlink_clocks(struct dp_ctrl_private *ctrl)
@@ -1209,7 +1209,7 @@ static int dp_ctrl_enable_mainlink_clocks(struct dp_ctrl_private *ctrl)
 
 	ret = ctrl->power->clk_enable(ctrl->power, DP_CTRL_PM, true);
 	if (ret) {
-		pr_err("Unabled to start link clocks\n");
+		pr_debug("Unabled to start link clocks\n");
 		ret = -EINVAL;
 	}
 
@@ -1227,7 +1227,7 @@ static int dp_ctrl_host_init(struct dp_ctrl *dp_ctrl, bool flip, bool reset)
 	struct dp_catalog_ctrl *catalog;
 
 	if (!dp_ctrl) {
-		pr_err("Invalid input data\n");
+		pr_debug("Invalid input data\n");
 		return -EINVAL;
 	}
 
@@ -1257,7 +1257,7 @@ static void dp_ctrl_host_deinit(struct dp_ctrl *dp_ctrl)
 	struct dp_ctrl_private *ctrl;
 
 	if (!dp_ctrl) {
-		pr_err("Invalid input data\n");
+		pr_debug("Invalid input data\n");
 		return;
 	}
 
@@ -1274,12 +1274,12 @@ static bool dp_ctrl_get_link_train_status(struct dp_ctrl *dp_ctrl)
 	struct dp_ctrl_private *ctrl;
 
 	if (!dp_ctrl) {
-		pr_err("Invalid input data\n");
+		pr_debug("Invalid input data\n");
 		return -EINVAL;
 	}
 
 	ctrl = container_of(dp_ctrl, struct dp_ctrl_private, dp_ctrl);
-	pr_info("link_train_status: %s\n", ctrl->link_train_status ? "success": "failure");
+	pr_debug("link_train_status: %s\n", ctrl->link_train_status ? "success": "failure");
 	return ctrl->link_train_status;
 }
 #endif
@@ -1293,14 +1293,14 @@ static int dp_ctrl_link_maintenance(struct dp_ctrl *dp_ctrl)
 #endif
 
 	if (!dp_ctrl) {
-		pr_err("Invalid input data\n");
+		pr_debug("Invalid input data\n");
 		return -EINVAL;
 	}
 
 	ctrl = container_of(dp_ctrl, struct dp_ctrl_private, dp_ctrl);
 
 	if (!ctrl->power_on || atomic_read(&ctrl->aborted)) {
-		pr_err("CTRL off, return\n");
+		pr_debug("CTRL off, return\n");
 		return -EINVAL;
 	}
 
@@ -1316,7 +1316,7 @@ static int dp_ctrl_link_maintenance(struct dp_ctrl *dp_ctrl)
 	do {
 #ifdef CONFIG_SEC_DISPLAYPORT
 		if (!secdp_get_cable_status()) {
-			pr_info("cable is out\n");
+			pr_debug("cable is out\n");
 			if (clk_on)
 				dp_ctrl_disable_mainlink_clocks(ctrl);
 			ret = -EIO;
@@ -1380,7 +1380,7 @@ static void dp_ctrl_process_phy_test_request(struct dp_ctrl *dp_ctrl)
 	struct dp_ctrl_private *ctrl;
 
 	if (!dp_ctrl) {
-		pr_err("Invalid input data\n");
+		pr_debug("Invalid input data\n");
 		return;
 	}
 
@@ -1404,7 +1404,7 @@ static void dp_ctrl_process_phy_test_request(struct dp_ctrl *dp_ctrl)
 
 	ret = ctrl->dp_ctrl.on(&ctrl->dp_ctrl);
 	if (ret)
-		pr_err("failed to enable DP controller\n");
+		pr_debug("failed to enable DP controller\n");
 
 	pr_debug("end\n");
 }
@@ -1465,7 +1465,7 @@ static void dp_ctrl_reset(struct dp_ctrl *dp_ctrl)
 	struct dp_ctrl_private *ctrl;
 
 	if (!dp_ctrl) {
-		pr_err("invalid params\n");
+		pr_debug("invalid params\n");
 		return;
 	}
 
@@ -1502,13 +1502,13 @@ static bool secdp_check_tbox(struct dp_ctrl_private *ctrl)
 		rc = strncmp(panel->monitor_name, secdp_tbox[i],
 				strlen(panel->monitor_name));
 		if (!rc) {
-			pr_info("<%s> detected!\n", panel->monitor_name);
+			pr_debug("<%s> detected!\n", panel->monitor_name);
 			ret = true;
 			goto end;
 		}
 	}
 
-	pr_info("real sink <%s>\n", panel->monitor_name);
+	pr_debug("real sink <%s>\n", panel->monitor_name);
 end:
 	return ret;
 }
@@ -1524,7 +1524,7 @@ static u32 secdp_dp_gen_link_clk(struct dp_panel *dp_panel)
 	min_link_rate = dp_panel->get_min_req_link_rate(dp_panel);
 
 	if (min_link_rate == 0)
-		pr_info("timing not found, set default\n");
+		pr_debug("timing not found, set default\n");
 	else if (min_link_rate <= 162000)
 		calc_link_rate = 162000;
 	else if (min_link_rate <= 270000)
@@ -1532,9 +1532,9 @@ static u32 secdp_dp_gen_link_clk(struct dp_panel *dp_panel)
 	else if (min_link_rate <= 540000)
 		calc_link_rate = 540000;
 	else
-		pr_err("too big!, set default\n");
+		pr_debug("too big!, set default\n");
 
-	pr_info("min_link_rate <%u>, calc_link_rate <%u>\n",
+	pr_debug("min_link_rate <%u>, calc_link_rate <%u>\n",
 		min_link_rate, calc_link_rate);
 end:
 	return calc_link_rate;
@@ -1604,7 +1604,7 @@ static int dp_ctrl_on(struct dp_ctrl *dp_ctrl)
 
 #ifdef CONFIG_SEC_DISPLAYPORT
 		if (/*!secdp_get_hpd_status() ||*/ !secdp_get_cable_status()) {
-			pr_info("hpd_low or cable lost\n");
+			pr_debug("hpd_low or cable lost\n");
 			link_train_max_retries = 2;
 		}
 #endif
@@ -1618,7 +1618,7 @@ static int dp_ctrl_on(struct dp_ctrl *dp_ctrl)
 
 #ifdef CONFIG_SEC_DISPLAYPORT
 		if (/*!secdp_get_hpd_status() ||*/ !secdp_get_cable_status()) {
-			pr_info("hpd_low or cable lost, skip to enable clk\n");
+			pr_debug("hpd_low or cable lost, skip to enable clk\n");
 			link_train_max_retries = 2;
 		}
 #endif
@@ -1686,7 +1686,7 @@ struct dp_ctrl *dp_ctrl_get(struct dp_ctrl_in *in)
 
 	if (!in->dev || !in->panel || !in->aux ||
 	    !in->link || !in->catalog) {
-		pr_err("invalid input\n");
+		pr_debug("invalid input\n");
 		rc = -EINVAL;
 		goto error;
 	}

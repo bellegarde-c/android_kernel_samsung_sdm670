@@ -1023,7 +1023,7 @@ int ss_send_cmd(struct samsung_display_driver_data *vdd,
 	rc = dsi_display_clk_ctrl(dsi_display->dsi_clk_handle,
 			DSI_ALL_CLKS, DSI_CLK_ON);
 	if (rc) {
-		pr_err("[%s] failed to enable DSI core clocks, rc=%d\n",
+		pr_debug("[%s] failed to enable DSI core clocks, rc=%d\n",
 				dsi_display->name, rc);
 		goto error;
 	}
@@ -1033,7 +1033,7 @@ int ss_send_cmd(struct samsung_display_driver_data *vdd,
 	rc = dsi_display_clk_ctrl(dsi_display->dsi_clk_handle,
 			DSI_ALL_CLKS, DSI_CLK_OFF);
 	if (rc) {
-		pr_err("[%s] failed to disable DSI core clocks, rc=%d\n",
+		pr_debug("[%s] failed to disable DSI core clocks, rc=%d\n",
 				dsi_display->name, rc);
 		goto error;
 	}
@@ -3596,7 +3596,7 @@ static void set_lpm_br_values(struct samsung_display_driver_data *vdd)
 			left = p + 1;
 
 		if (loop > table->tab_size) {
-			pr_err("can not find (%d) level in table!\n", bl_level);
+			pr_debug("can not find (%d) level in table!\n", bl_level);
 			p = table->tab_size - 1;
 			break;
 		}
@@ -3626,7 +3626,7 @@ int ss_panel_lpm_power_ctrl(struct samsung_display_driver_data *vdd, int enable)
 
 	panel = GET_DSI_PANEL(vdd);
 	if (IS_ERR_OR_NULL(panel)) {
-		pr_err("No Panel Data\n");
+		pr_debug("No Panel Data\n");
 		return -ENODEV;
 	}
 
@@ -3636,7 +3636,7 @@ int ss_panel_lpm_power_ctrl(struct samsung_display_driver_data *vdd, int enable)
 	lpm_pwr = &vdd->panel_lpm.lpm_pwr;
 
 	if (lpm_pwr->support_lpm_pwr_ctrl) {
-		pr_err("%s: No panel power control for LPM\n", __func__);
+		pr_debug("%s: No panel power control for LPM\n", __func__);
 		return -ENODEV;
 	}
 
@@ -4070,7 +4070,7 @@ static void set_normal_br_values(struct samsung_display_driver_data *vdd)
 		LCD_DEBUG("left(%d) right(%d)\n", left, right);
 
 		if (loop > table->tab_size) {
-			pr_err("can not find (%d) level in table!\n", vdd->br.bl_level);
+			pr_debug("can not find (%d) level in table!\n", vdd->br.bl_level);
 			p = table->tab_size - 1;
 			break;
 		}
@@ -4138,7 +4138,7 @@ static void set_hbm_br_values(struct samsung_display_driver_data *vdd)
 		LCD_DEBUG("left(%d) right(%d)\n", left, right);
 
 		if (loop > table->tab_size) {
-			pr_err("can not find (%d) level in table!\n", vdd->br.bl_level);
+			pr_debug("can not find (%d) level in table!\n", vdd->br.bl_level);
 			p = table->tab_size - 1;
 			break;
 		}

@@ -1301,7 +1301,7 @@ static int mdnie_get_efs(char *filename, int *value)
 	u8 buf[128] = { 0, };
 
 	if (!filename || !value) {
-		pr_err("%s invalid parameter\n", __func__);
+		pr_debug("%s invalid parameter\n", __func__);
 		return -EINVAL;
 	}
 
@@ -1312,9 +1312,9 @@ static int mdnie_get_efs(char *filename, int *value)
 	if (IS_ERR(filp)) {
 		ret = PTR_ERR(filp);
 		if (ret == -ENOENT)
-			pr_err("%s file(%s) not exist\n", __func__, filename);
+			pr_debug("%s file(%s) not exist\n", __func__, filename);
 		else
-			pr_info("%s file(%s) open error(ret %d)\n",
+			pr_debug("%s file(%s) open error(ret %d)\n",
 					__func__, filename, ret);
 		set_fs(old_fs);
 		return -ENOENT;
@@ -1324,7 +1324,7 @@ static int mdnie_get_efs(char *filename, int *value)
 		fsize = filp->f_path.dentry->d_inode->i_size;
 
 	if (fsize == 0 || fsize >= ARRAY_SIZE(buf)) {
-		pr_err("%s invalid file(%s) size %d\n",
+		pr_debug("%s invalid file(%s) size %d\n",
 				__func__, filename, fsize);
 		ret = -EEXIST;
 		goto exit;
@@ -1335,19 +1335,19 @@ static int mdnie_get_efs(char *filename, int *value)
 	buf[nread] = '\0';
 
 	if (nread != fsize) {
-		pr_err("%s failed to read (ret %d)\n", __func__, nread);
+		pr_debug("%s failed to read (ret %d)\n", __func__, nread);
 		ret = -EIO;
 		goto exit;
 	}
 
 	rc = sscanf(buf, "%d %d %d", &value[0], &value[1], &value[2]);
 	if (rc != 3) {
-		pr_err("%s failed to kstrtoint %d\n", __func__, rc);
+		pr_debug("%s failed to kstrtoint %d\n", __func__, rc);
 		ret = -EINVAL;
 		goto exit;
 	}
 
-	pr_info("%s %s(size %d) : %d %d %d\n",
+	pr_debug("%s %s(size %d) : %d %d %d\n",
 			__func__, filename, fsize, value[0], value[1], value[2]);
 
 exit:

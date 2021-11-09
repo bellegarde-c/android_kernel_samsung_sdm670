@@ -90,7 +90,7 @@ int ss_spi_read(struct spi_device *spi, u8 *buf,
 
 	ret = spi_sync(spi, &msg);
 	if (ret) {
-		pr_err("[mdss spi] %s : spi_sync fail..\n", __func__);
+		pr_debug("[mdss spi] %s : spi_sync fail..\n", __func__);
 		goto err;
 	}
 
@@ -217,7 +217,7 @@ static int ss_spi_probe(struct spi_device *client)
 
 static int ss_spi_remove(struct spi_device *spi)
 {
-	pr_err("[mdss] %s : remove \n", __func__);
+	pr_debug("[mdss] %s : remove \n", __func__);
 	return 0;
 }
 

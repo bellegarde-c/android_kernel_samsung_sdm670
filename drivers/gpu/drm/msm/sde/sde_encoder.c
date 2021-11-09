@@ -1696,7 +1696,7 @@ static int _sde_encoder_switch_to_watchdog_vsync(struct drm_encoder *drm_enc)
 	struct msm_display_info disp_info;
 
 	if (!drm_enc) {
-		pr_err("invalid drm encoder\n");
+		pr_debug("invalid drm encoder\n");
 		return -EINVAL;
 	}
 
@@ -2703,13 +2703,13 @@ static int _sde_encoder_input_connect(struct input_handler *handler,
 
 	rc = input_register_handle(handle);
 	if (rc) {
-		pr_err("failed to register input handle\n");
+		pr_debug("failed to register input handle\n");
 		goto error;
 	}
 
 	rc = input_open_device(handle);
 	if (rc) {
-		pr_err("failed to open input device\n");
+		pr_debug("failed to open input device\n");
 		goto error_unregister;
 	}
 
@@ -2754,7 +2754,7 @@ static int _sde_encoder_input_handler_register(
 
 	rc = input_register_handler(input_handler);
 	if (rc) {
-		pr_err("input_register_handler failed, rc= %d\n", rc);
+		pr_debug("input_register_handler failed, rc= %d\n", rc);
 		kfree(input_handler);
 		return rc;
 	}

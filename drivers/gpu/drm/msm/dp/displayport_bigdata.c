@@ -83,7 +83,7 @@ void secdp_bigdata_init(struct class *dp_class)
 
 	ret = class_create_file(dp_class, &class_attr_dp_error_info);
 	if (ret)
-		pr_err("failed to create attr_dp_bigdata(%d)\n", ret);
+		pr_debug("failed to create attr_dp_bigdata(%d)\n", ret);
 
 	secdp_bigdata_init_item(BD_LINK_CONFIGURE, "LINK_CFG", CHR);
 	secdp_bigdata_init_item(BD_ADAPTER_HWID, "ADT_HWID", HEX);

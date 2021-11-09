@@ -696,7 +696,7 @@ static int buffer_backup(u8 *buf, int size, char *name)
 	LCD_ERR("%s filename %s size %d\n", __func__, name, size);
 	fp = filp_open(name, O_CREAT | O_TRUNC | O_WRONLY | O_SYNC, 0660);
 	if (IS_ERR(fp)) {
-		pr_err("%s, fail to open %s file\n", __func__, name);
+		pr_debug("%s, fail to open %s file\n", __func__, name);
 		goto open_err;
 	}
 
@@ -3049,11 +3049,11 @@ static ssize_t ss_dpui_show(struct device *dev,
 	update_dpui_log(DPUI_LOG_LEVEL_INFO, DPUI_TYPE_PANEL);
 	ret = get_dpui_log(buf, DPUI_LOG_LEVEL_INFO, DPUI_TYPE_PANEL);
 	if (ret < 0) {
-		pr_err("%s failed to get log %d\n", __func__, ret);
+		pr_debug("%s failed to get log %d\n", __func__, ret);
 		return ret;
 	}
 
-	pr_info("%s\n", buf);
+	pr_debug("%s\n", buf);
 
 	return ret;
 }
@@ -3075,16 +3075,16 @@ static ssize_t ss_dpui_dbg_show(struct device *dev,
 	struct device_attribute *attr, char *buf)
 {
 	int ret;
-	pr_info("ss_dpui_dbg_show++++++++++++\n");
+	pr_debug("ss_dpui_dbg_show++++++++++++\n");
 
 	update_dpui_log(DPUI_LOG_LEVEL_DEBUG, DPUI_TYPE_PANEL);
 	ret = get_dpui_log(buf, DPUI_LOG_LEVEL_DEBUG, DPUI_TYPE_PANEL);
 	if (ret < 0) {
-		pr_err("%s failed to get log %d\n", __func__, ret);
+		pr_debug("%s failed to get log %d\n", __func__, ret);
 		return ret;
 	}
-	pr_info("ss_dpui_dbg_show-----------\n");
-	pr_info("%s\n", buf);
+	pr_debug("ss_dpui_dbg_show-----------\n");
+	pr_debug("%s\n", buf);
 
 	return ret;
 }
@@ -3110,11 +3110,11 @@ static ssize_t ss_dpci_show(struct device *dev,
 	update_dpui_log(DPUI_LOG_LEVEL_INFO, DPUI_TYPE_CTRL);
 	ret = get_dpui_log(buf, DPUI_LOG_LEVEL_INFO, DPUI_TYPE_CTRL);
 	if (ret < 0) {
-		pr_err("%s failed to get log %d\n", __func__, ret);
+		pr_debug("%s failed to get log %d\n", __func__, ret);
 		return ret;
 	}
 
-	pr_info("%s\n", buf);
+	pr_debug("%s\n", buf);
 
 	return ret;
 }
@@ -3140,11 +3140,11 @@ static ssize_t ss_dpci_dbg_show(struct device *dev,
 	update_dpui_log(DPUI_LOG_LEVEL_DEBUG, DPUI_TYPE_CTRL);
 	ret = get_dpui_log(buf, DPUI_LOG_LEVEL_DEBUG, DPUI_TYPE_CTRL);
 	if (ret < 0) {
-		pr_err("%s failed to get log %d\n", __func__, ret);
+		pr_debug("%s failed to get log %d\n", __func__, ret);
 		return ret;
 	}
 
-	pr_info("%s\n", buf);
+	pr_debug("%s\n", buf);
 	return ret;
 }
 

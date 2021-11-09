@@ -59,7 +59,7 @@ static int secdp_check_store_args(const char *buf, size_t size)
 	int ret;
 
 	if (strnchr(buf, size, '-')) {
-		pr_err("range is forbidden!\n");
+		pr_debug("range is forbidden!\n");
 		ret = -1;
 		goto exit;
 	}
@@ -76,7 +76,7 @@ static ssize_t secdp_sbu_sw_sel_store(struct class *dev,
 	int sbu_sw_sel, sbu_sw_oe;
 
 	if (secdp_check_store_args(buf, size)) {
-		pr_err("args error!\n");
+		pr_debug("args error!\n");
 		goto exit;
 	}
 
@@ -84,14 +84,14 @@ static ssize_t secdp_sbu_sw_sel_store(struct class *dev,
 
 	sbu_sw_sel = val[1];
 	sbu_sw_oe = val[2];
-	pr_info("sbu_sw_sel(%d), sbu_sw_oe(%d)\n", sbu_sw_sel, sbu_sw_oe);
+	pr_debug("sbu_sw_sel(%d), sbu_sw_oe(%d)\n", sbu_sw_sel, sbu_sw_oe);
 
 	if (sbu_sw_oe == 0/*on*/)
 		secdp_config_gpios_factory(sbu_sw_sel, true);
 	else if (sbu_sw_oe == 1/*off*/)
 		secdp_config_gpios_factory(sbu_sw_sel, false);
 	else
-		pr_err("unknown sbu_sw_oe value: %d", sbu_sw_oe);
+		pr_debug("unknown sbu_sw_oe value: %d", sbu_sw_oe);
 
 exit:
 	return size;
@@ -125,7 +125,7 @@ static ssize_t secdp_forced_resolution_store(struct class *dev,
 	int val[10] = {0, };
 
 	if (secdp_check_store_args(buf, size)) {
-		pr_err("args error!\n");
+		pr_debug("args error!\n");
 		goto exit;
 	}
 
@@ -149,11 +149,11 @@ static ssize_t secdp_dex_show(struct class *class,
 
 	if (!secdp_get_cable_status() || !secdp_get_hpd_status() ||
 			secdp_get_poor_connection_status() || !secdp_get_link_train_status()) {
-		pr_info("cable is out\n");
+		pr_debug("cable is out\n");
 		dex->prev = dex->curr = dex->dex_node_status = DEX_DISABLED;
 	}
 
-	pr_info("prev: %d, curr: %d, dex_node_status: %d\n", dex->prev, dex->curr, dex->dex_node_status);
+	pr_debug("prev: %d, curr: %d, dex_node_status: %d\n", dex->prev, dex->curr, dex->dex_node_status);
 	rc = scnprintf(buf, PAGE_SIZE, "%d\n", dex->dex_node_status);
 
 	if (dex->dex_node_status == DEX_DURING_MODE_CHANGE)
@@ -174,16 +174,16 @@ static ssize_t secdp_dex_store(struct class *class,
 	struct secdp_dex *dex = &sec->dex;
 
 	if (secdp_check_store_args(buf, size)) {
-		pr_err("args error!\n");
+		pr_debug("args error!\n");
 		goto exit;
 	}
 
 	get_options(buf, ARRAY_SIZE(val), val);
-	pr_info("%d(0x%02x)\n", val[1], val[1]);
+	pr_debug("%d(0x%02x)\n", val[1], val[1]);
 	setting_ui = (val[1] & 0xf0) >> 4;
 	run = (val[1] & 0x0f);
 
-	pr_info("setting_ui: %d, run: %d, cable: %d\n",
+	pr_debug("setting_ui: %d, run: %d, cable: %d\n",
 		setting_ui, run, sec->cable_connected);
 
 	dex->setting_ui = setting_ui;
@@ -203,7 +203,7 @@ static ssize_t secdp_dex_store(struct class *class,
 		/* register */
 		rc = secdp_ccic_noti_register_ex(sec, false);
 		if (rc)
-			pr_err("noti register fail, rc(%d)\n", rc);
+			pr_debug("noti register fail, rc(%d)\n", rc);
 
 		mutex_unlock(&sec->notifier_lock);
 		goto exit;
@@ -212,13 +212,13 @@ static ssize_t secdp_dex_store(struct class *class,
 
 	if (!secdp_get_cable_status() || !secdp_get_hpd_status() ||
 			secdp_get_poor_connection_status() || !secdp_get_link_train_status()) {
-		pr_info("cable is out\n");
+		pr_debug("cable is out\n");
 		dex->prev = dex->curr = dex->dex_node_status = DEX_DISABLED;
 		goto exit;
 	}
 
 	if (dex->curr == dex->prev) {
-		pr_info("dex is %s already\n", dex->curr ? "enabled" : "disabled");
+		pr_debug("dex is %s already\n", dex->curr ? "enabled" : "disabled");
 		goto exit;
 	}
 
@@ -235,7 +235,7 @@ static ssize_t secdp_dex_store(struct class *class,
 	}
 
 	if (!secdp_check_dex_reconnect()) {
-		pr_info("not need reconnect\n");
+		pr_debug("not need reconnect\n");
 		goto exit;
 	}
 
@@ -254,7 +254,7 @@ static ssize_t secdp_dex_version_show(struct class *class,
 	struct secdp_misc *sec = sysfs->sec;
 	struct secdp_dex *dex = &sec->dex;
 
-	pr_info("branch revision: HW(0x%X), SW(0x%X, 0x%X)\n",
+	pr_debug("branch revision: HW(0x%X), SW(0x%X, 0x%X)\n",
 		dex->fw_ver[0], dex->fw_ver[1], dex->fw_ver[2]);
 
 	rc = scnprintf(buf, PAGE_SIZE, "%02X%02X\n",
@@ -275,19 +275,19 @@ static ssize_t secdp_monitor_info_show(struct class *class,
 
 	info = secdp_get_panel_info();
 	if (!info) {
-		pr_err("unable to find panel info\n");
+		pr_debug("unable to find panel info\n");
 		goto exit;
 	}
 
 	edid_ctrl = info->edid_ctrl;
 	if (!edid_ctrl) {
-		pr_err("unable to find edid_ctrl\n");
+		pr_debug("unable to find edid_ctrl\n");
 		goto exit;
 	}
 
 	edid = edid_ctrl->edid;
 	if (!edid) {
-		pr_err("unable to find edid\n");
+		pr_debug("unable to find edid\n");
 		goto exit;
 	}
 
@@ -309,14 +309,14 @@ static ssize_t secdp_unit_test_show(struct class *class,
 	int rc, cmd = sysfs->test_cmd;
 	bool res = false;
 
-	pr_info("test_cmd: %s\n", secdp_utcmd_to_str(cmd));
+	pr_debug("test_cmd: %s\n", secdp_utcmd_to_str(cmd));
 
 	switch (cmd) {
 	case SECDP_UTCMD_EDID_PARSE:
 		res = secdp_unit_test_edid_parse();
 		break;
 	default:
-		pr_info("invalid test_cmd: %d\n", cmd);
+		pr_debug("invalid test_cmd: %d\n", cmd);
 		break;
 	}
 
@@ -331,14 +331,14 @@ static ssize_t secdp_unit_test_store(struct class *dev,
 	int val[10] = {0, };
 
 	if (secdp_check_store_args(buf, size)) {
-		pr_err("args error!\n");
+		pr_debug("args error!\n");
 		goto exit;
 	}
 
 	get_options(buf, ARRAY_SIZE(val), val);
 	sysfs->test_cmd = val[1];
 
-	pr_info("test_cmd: %d...%s\n", sysfs->test_cmd, secdp_utcmd_to_str(sysfs->test_cmd));
+	pr_debug("test_cmd: %d...%s\n", sysfs->test_cmd, secdp_utcmd_to_str(sysfs->test_cmd));
 
 exit:
 	return size;
@@ -358,7 +358,7 @@ static ssize_t secdp_voltage_level_store(struct class *dev,
 	int i, val[30] = {0, };
 
 	if (secdp_check_store_args(buf, size)) {
-		pr_err("args error!\n");
+		pr_debug("args error!\n");
 		goto exit;
 	}
 	pr_debug("+++, size(%d)\n", (int)size);
@@ -385,7 +385,7 @@ static ssize_t secdp_preemphasis_level_store(struct class *dev,
 	int i, val[30] = {0, };
 
 	if (secdp_check_store_args(buf, size)) {
-		pr_err("args error!\n");
+		pr_debug("args error!\n");
 		goto exit;
 	}
 	pr_debug("+++, size(%d)\n", (int)size);
@@ -419,42 +419,42 @@ int secdp_sysfs_init(void)
 
 	dp_class = class_create(THIS_MODULE, "dp_sec");
 	if (IS_ERR(dp_class)) {
-		pr_err("failed to create dp_sec_class\n");
+		pr_debug("failed to create dp_sec_class\n");
 		goto exit;
 	}
 
 	rc = class_create_file(dp_class, &class_attr_dp_sbu_sw_sel);
 	if (rc)
-		pr_err("failed to create attr_dp_sbu_sw_sel(%d)\n", rc);
+		pr_debug("failed to create attr_dp_sbu_sw_sel(%d)\n", rc);
 
 	rc = class_create_file(dp_class, &class_attr_forced_resolution);
 	if (rc)
-		pr_err("failed to create attr_dp_forced_resolution(%d)\n", rc);
+		pr_debug("failed to create attr_dp_forced_resolution(%d)\n", rc);
 
 	rc = class_create_file(dp_class, &class_attr_dex);
 	if (rc)
-		pr_err("failed to create attr_dex(%d)\n", rc);
+		pr_debug("failed to create attr_dex(%d)\n", rc);
 
 	rc = class_create_file(dp_class, &class_attr_dex_ver);
 	if (rc)
-		pr_err("failed to create attr_dex_ver(%d)\n", rc);
+		pr_debug("failed to create attr_dex_ver(%d)\n", rc);
 
 	rc = class_create_file(dp_class, &class_attr_monitor_info);
 	if (rc)
-		pr_err("failed to create attr_monitor_info(%d)\n", rc);
+		pr_debug("failed to create attr_monitor_info(%d)\n", rc);
 
 	rc = class_create_file(dp_class, &class_attr_unit_test);
 	if (rc)
-		pr_err("failed to create attr_dp_test(%d)\n", rc);
+		pr_debug("failed to create attr_dp_test(%d)\n", rc);
 
 #ifdef SECDP_CALIBRATE_VXPX
 	rc = class_create_file(dp_class, &class_attr_vx_lvl);
 	if (rc)
-		pr_err("failed to create attr_voltage_level(%d)\n", rc);
+		pr_debug("failed to create attr_voltage_level(%d)\n", rc);
 
 	rc = class_create_file(dp_class, &class_attr_px_lvl);
 	if (rc)
-		pr_err("failed to create attr_preemphasis_level(%d)\n", rc);
+		pr_debug("failed to create attr_preemphasis_level(%d)\n", rc);
 #endif
 
 #ifdef CONFIG_SEC_DISPLAYPORT_BIGDATA
@@ -478,7 +478,7 @@ struct secdp_sysfs *secdp_sysfs_get(struct device *dev, struct secdp_misc *sec)
 	struct secdp_sysfs *dp_sysfs;
 
 	if (!dev || !sec) {
-		pr_err("invalid input\n");
+		pr_debug("invalid input\n");
 		rc = -EINVAL;
 		goto error;
 	}

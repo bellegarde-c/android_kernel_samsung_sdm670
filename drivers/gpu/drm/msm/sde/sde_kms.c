@@ -842,7 +842,7 @@ static int _sde_kms_release_splash_buffer(unsigned int mem_addr,
 
 #if defined(CONFIG_DISPLAY_SAMSUNG) && defined(CONFIG_SEC_DEBUG)
 	if (sec_debug_is_enabled()) {
-		pr_info("skip to free splash memory\n");
+		pr_debug("skip to free splash memory\n");
 		return 0;
 	}
 #endif
@@ -1039,7 +1039,7 @@ static void _sde_kms_release_splash_resource(struct sde_kms *sde_kms,
 			sde_kms->splash_data.splash_base,
 			sde_kms->splash_data.splash_size);
 		if (rc)
-			pr_err("failed to release splash memory\n");
+			pr_debug("failed to release splash memory\n");
 		sde_kms->splash_data.splash_base = 0;
 		sde_kms->splash_data.splash_size = 0;
 	}
@@ -1085,7 +1085,7 @@ static void sde_kms_complete_commit(struct msm_kms *kms,
 			continue;
 		rc = c_conn->ops.post_kickoff(connector);
 		if (rc) {
-			pr_err("Connector Post kickoff failed rc=%d\n",
+			pr_debug("Connector Post kickoff failed rc=%d\n",
 					 rc);
 		}
 	}
@@ -3286,7 +3286,7 @@ static int _sde_kms_get_splash_data(struct sde_splash_data *data)
 	data->splash_base = (unsigned long)r.start;
 	data->splash_size = (r.end - r.start) + 1;
 
-	pr_info("found continuous splash base address:%lx size:%x\n",
+	pr_debug("found continuous splash base address:%lx size:%x\n",
 						data->splash_base,
 						data->splash_size);
 	return ret;
@@ -3417,7 +3417,7 @@ static int sde_kms_hw_init(struct msm_kms *kms)
 
 	_sde_kms_core_hw_rev_init(sde_kms);
 
-	pr_info("sde hardware revision:0x%x\n", sde_kms->core_rev);
+	pr_debug("sde hardware revision:0x%x\n", sde_kms->core_rev);
 
 	sde_kms->catalog = sde_hw_catalog_init(dev, sde_kms->core_rev);
 	if (IS_ERR_OR_NULL(sde_kms->catalog)) {

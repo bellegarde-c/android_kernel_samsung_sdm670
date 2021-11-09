@@ -170,7 +170,7 @@ int secdp_logger_init(void)
 
 	entry = proc_create(PROC_FILE_NAME, 0444, NULL, &secdp_logger_ops);
 	if (!entry) {
-		pr_err("%s: failed to create proc entry\n", __func__);
+		pr_debug("%s: failed to create proc entry\n", __func__);
 		return 0;
 	}
 

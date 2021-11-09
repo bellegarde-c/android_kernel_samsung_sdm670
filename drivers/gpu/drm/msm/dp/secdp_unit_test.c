@@ -98,7 +98,7 @@ bool secdp_unit_test_edid_parse(void)
 
 	connector = secdp_get_connector();
 	if (!connector) {
-		pr_err("fail to get connector\n");
+		pr_debug("fail to get connector\n");
 		goto exit;
 	}
 
@@ -106,7 +106,7 @@ bool secdp_unit_test_edid_parse(void)
 
 	edid_ctrl = sde_edid_init();
 	if (!edid_ctrl) {
-		pr_err("edid_ctrl alloc failed\n");
+		pr_debug("edid_ctrl alloc failed\n");
 		goto exit;
 	}
 
@@ -122,7 +122,7 @@ bool secdp_unit_test_edid_parse(void)
 
 	/* check resolutions */
 	list_for_each_entry(mode, &connector->probed_modes, head) {
-		pr_info("checking %s @ %d Hz..\n", mode->name, drm_mode_vrefresh(mode));
+		pr_debug("checking %s @ %d Hz..\n", mode->name, drm_mode_vrefresh(mode));
 		for (i = 0; i < table_size; i++) {
 			bool interlaced = !!(mode->flags & DRM_MODE_FLAG_INTERLACE);
 
@@ -151,13 +151,13 @@ bool secdp_unit_test_edid_parse(void)
 
 	/* check if num of supported resolutions are found without errors */
 	if (parsed_res_cnt != table_size) {
-		pr_err("count is not matched! parsed_res_cnt: %d, table_size: %d\n",
+		pr_debug("count is not matched! parsed_res_cnt: %d, table_size: %d\n",
 			parsed_res_cnt, table_size);
 		goto exit;
 	}
 
 	ret = true;
 exit:
-	pr_info("returns %s\n", ret ? "true" : "false");
+	pr_debug("returns %s\n", ret ? "true" : "false");
 	return ret;
 }
