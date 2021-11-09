@@ -17,7 +17,6 @@
 #include "sde_hw_interrupts.h"
 #include "sde_core_irq.h"
 #include "sde_formats.h"
-#include "sde_trace.h"
 
 #if defined(CONFIG_DISPLAY_SAMSUNG)
 #include "ss_dsi_panel_common.h"
