@@ -36,7 +36,6 @@
 #include "sde_power_handle.h"
 #include "sde_hw_dsc.h"
 #include "sde_crtc.h"
-#include "sde_trace.h"
 #include "sde_core_irq.h"
 
 #if defined(CONFIG_DISPLAY_SAMSUNG)
@@ -3133,9 +3132,6 @@ static void sde_encoder_underrun_callback(struct drm_encoder *drm_enc,
 
 	atomic_inc(&phy_enc->underrun_cnt);
 	SDE_EVT32(DRMID(drm_enc), atomic_read(&phy_enc->underrun_cnt));
-
-	trace_sde_encoder_underrun(DRMID(drm_enc),
-		atomic_read(&phy_enc->underrun_cnt));
 
 	SDE_DBG_CTRL("stop_ftrace");
 	SDE_DBG_CTRL("panic_underrun");

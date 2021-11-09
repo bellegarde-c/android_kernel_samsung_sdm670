@@ -50,7 +50,6 @@
 #include "soc/qcom/secure_buffer.h"
 
 #define CREATE_TRACE_POINTS
-#include "sde_trace.h"
 
 /* defines for secure channel call */
 #define SEC_SID_CNT               2
