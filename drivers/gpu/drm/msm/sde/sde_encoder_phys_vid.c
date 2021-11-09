@@ -16,7 +16,6 @@
 #include "sde_core_irq.h"
 #include "sde_formats.h"
 #include "dsi_display.h"
-#include "sde_trace.h"
 
 #define SDE_DEBUG_VIDENC(e, fmt, ...) SDE_DEBUG("enc%d intf%d " fmt, \
 		(e) && (e)->base.parent ? \
