@@ -29,7 +29,7 @@ static void handle_midi_control(struct snd_dg00x *dg00x, __be32 *buf,
 	unsigned int len;
 	u8 *b;
 
-	substream = ACCESS_ONCE(dg00x->in_control);
+	substream = READ_ONCE(dg00x->in_control);
 	if (substream == NULL)
 		return;
 

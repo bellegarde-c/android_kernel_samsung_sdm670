@@ -859,14 +859,14 @@ static int __btrfs_end_transaction(struct btrfs_trans_handle *trans,
 
 	if (lock && !atomic_read(&root->fs_info->open_ioctl_trans) &&
 	    should_end_transaction(trans, root) &&
-	    ACCESS_ONCE(cur_trans->state) == TRANS_STATE_RUNNING) {
+	    READ_ONCE(cur_trans->state) == TRANS_STATE_RUNNING) {
 		spin_lock(&info->trans_lock);
 		if (cur_trans->state == TRANS_STATE_RUNNING)
 			cur_trans->state = TRANS_STATE_BLOCKED;
 		spin_unlock(&info->trans_lock);
 	}
 
-	if (lock && ACCESS_ONCE(cur_trans->state) == TRANS_STATE_BLOCKED) {
+	if (lock && READ_ONCE(cur_trans->state) == TRANS_STATE_BLOCKED) {
 		if (throttle)
 			return btrfs_commit_transaction(trans, root);
 		else
@@ -1926,7 +1926,7 @@ int btrfs_commit_transaction(struct btrfs_trans_handle *trans,
 	trans->dirty = true;
 
 	/* Stop the commit early if ->aborted is set */
-	if (unlikely(ACCESS_ONCE(cur_trans->aborted))) {
+	if (unlikely(READ_ONCE(cur_trans->aborted))) {
 		ret = cur_trans->aborted;
 		btrfs_end_transaction(trans, root);
 		return ret;
@@ -2066,7 +2066,7 @@ int btrfs_commit_transaction(struct btrfs_trans_handle *trans,
 		   atomic_read(&cur_trans->num_writers) == 1);
 
 	/* ->aborted might be set after the previous check, so check it */
-	if (unlikely(ACCESS_ONCE(cur_trans->aborted))) {
+	if (unlikely(READ_ONCE(cur_trans->aborted))) {
 		ret = cur_trans->aborted;
 		goto scrub_continue;
 	}
@@ -2180,7 +2180,7 @@ int btrfs_commit_transaction(struct btrfs_trans_handle *trans,
 	 * The tasks which save the space cache and inode cache may also
 	 * update ->aborted, check it.
 	 */
-	if (unlikely(ACCESS_ONCE(cur_trans->aborted))) {
+	if (unlikely(READ_ONCE(cur_trans->aborted))) {
 		ret = cur_trans->aborted;
 		mutex_unlock(&root->fs_info->tree_log_mutex);
 		mutex_unlock(&root->fs_info->reloc_mutex);

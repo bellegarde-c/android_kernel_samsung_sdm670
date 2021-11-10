@@ -290,7 +290,7 @@ int handle_userfault(struct fault_env *fe, unsigned long reason)
 	 * in __get_user_pages if userfaultfd_release waits on the
 	 * caller of handle_userfault to release the mmap_sem.
 	 */
-	if (unlikely(ACCESS_ONCE(ctx->released)))
+	if (unlikely(READ_ONCE(ctx->released)))
 		goto out;
 
 	/*
@@ -366,7 +366,7 @@ int handle_userfault(struct fault_env *fe, unsigned long reason)
 	must_wait = userfaultfd_must_wait(ctx, fe->address, fe->flags, reason);
 	up_read(&mm->mmap_sem);
 
-	if (likely(must_wait && !ACCESS_ONCE(ctx->released) &&
+	if (likely(must_wait && !READ_ONCE(ctx->released) &&
 		   (return_to_userland ? !signal_pending(current) :
 		    !fatal_signal_pending(current)))) {
 		wake_up_poll(&ctx->fd_wqh, POLLIN);
@@ -466,7 +466,7 @@ static int userfaultfd_release(struct inode *inode, struct file *file)
 	unsigned long new_flags;
 	bool still_valid;
 
-	ACCESS_ONCE(ctx->released) = true;
+	WRITE_ONCE(ctx->released, true);
 
 	if (!mmget_not_zero(mm))
 		goto wakeup;
