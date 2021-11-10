@@ -1128,7 +1128,7 @@ static int __transport_send(struct vs_transport_axon *transport,
 			mbuf->base.size, service_id);
 	vs_debug_dump_mbuf(transport->session_dev, &mbuf->base);
 
-	uptr = ACCESS_ONCE(transport->tx->queues[0].uptr);
+	uptr = READ_ONCE(transport->tx->queues[0].uptr);
 	desc = &transport->tx_descs[uptr];
 
 	/* Is the descriptor ready to use? */
@@ -1143,7 +1143,7 @@ static int __transport_send(struct vs_transport_axon *transport,
 	transport->tx_pools[uptr] = mbuf->pool;
 
 	INC_MOD(uptr, transport->tx->queues[0].entries);
-	ACCESS_ONCE(transport->tx->queues[0].uptr) = uptr;
+	WRITE_ONCE(transport->tx->queues[0].uptr, uptr);
 
 	/* Set up the descriptor */
 	desc->data_size = mbuf_real_size(mbuf);
@@ -1644,7 +1644,7 @@ static int transport_rx_queue_buffer(struct vs_transport_axon *transport,
 
 	/* Select the buffer desc to reallocate */
 	desc = &transport->rx_descs[transport->rx_uptr_allocated];
-	info = ACCESS_ONCE(desc->info);
+	info = READ_ONCE(desc->info);
 
 	/* If there is no space in the rx queue, fail */
 	if (okl4_axon_data_info_getusr(&info))
@@ -1659,7 +1659,7 @@ static int transport_rx_queue_buffer(struct vs_transport_axon *transport,
 	okl4_axon_data_info_setpending(&info, true);
 	okl4_axon_data_info_setusr(&info, true);
 	mb();
-	ACCESS_ONCE(desc->info) = info;
+	WRITE_ONCE(desc->info, info);
 
 	/* Proceed to the next buffer */
 	INC_MOD(transport->rx_uptr_allocated,
@@ -1683,10 +1683,10 @@ static int transport_process_msg(struct vs_transport_axon *transport)
 	okl4_axon_data_info_t info;
 
 	/* Select the descriptor to receive from */
-	uptr = ACCESS_ONCE(transport->rx->queues[0].uptr);
+	uptr = READ_ONCE(transport->rx->queues[0].uptr);
 	desc = &transport->rx_descs[uptr];
 	ptr = &transport->rx_ptrs[uptr];
-	info = ACCESS_ONCE(desc->info);
+	info = READ_ONCE(desc->info);
 
 	/* Have we emptied the whole queue? */
 	if (!okl4_axon_data_info_getusr(&info))
@@ -1716,13 +1716,13 @@ static int transport_process_msg(struct vs_transport_axon *transport)
 	mbuf->base.size = desc->data_size - sizeof(vs_service_id_t);
 
 	INC_MOD(uptr, transport->rx->queues[0].entries);
-	ACCESS_ONCE(transport->rx->queues[0].uptr) = uptr;
+	WRITE_ONCE(transport->rx->queues[0].uptr, uptr);
 
 	/* Finish reading desc before clearing usr bit */
 	smp_mb();
 
 	/* Re-check the pending bit, in case we've just been reset */
-	info = ACCESS_ONCE(desc->info);
+	info = READ_ONCE(desc->info);
 	if (unlikely(okl4_axon_data_info_getpending(&info))) {
 		kmem_cache_free(mbuf_cache, mbuf);
 		return 0;
@@ -1730,7 +1730,7 @@ static int transport_process_msg(struct vs_transport_axon *transport)
 
 	/* Clear usr bit; after this point the buffer is owned by the mbuf */
 	okl4_axon_data_info_setusr(&info, false);
-	ACCESS_ONCE(desc->info) = info;
+	WRITE_ONCE(desc->info, info);
 
 	/* Determine who to deliver the mbuf to */
 	service_id = transport_get_mbuf_service_id(transport,
@@ -1917,7 +1917,7 @@ static void transport_flush_rx_queues(struct vs_transport_axon *transport)
 	 */
 	smp_mb();
 	transport->rx->queues[0].kptr =
-		ACCESS_ONCE(transport->rx->queues[0].uptr);
+		READ_ONCE(transport->rx->queues[0].uptr);
 
 	/*
 	 * Cancel any pending freed bufs work. We can't flush it here, but

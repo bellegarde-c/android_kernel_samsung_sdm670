@@ -1409,7 +1409,7 @@ retry:
 			goto done;
 		}
 		/* copy from receiver cache line and recalculate */
-		sc->alloc_free = ACCESS_ONCE(sc->free);
+		sc->alloc_free = READ_ONCE(sc->free);
 		avail =
 			(unsigned long)sc->credits -
 			(sc->fill - sc->alloc_free);
@@ -1418,7 +1418,7 @@ retry:
 			spin_unlock_irqrestore(&sc->alloc_lock, flags);
 			sc_release_update(sc);
 			spin_lock_irqsave(&sc->alloc_lock, flags);
-			sc->alloc_free = ACCESS_ONCE(sc->free);
+			sc->alloc_free = READ_ONCE(sc->free);
 			trycount++;
 			goto retry;
 		}
@@ -1647,7 +1647,7 @@ void sc_release_update(struct send_context *sc)
 
 	/* call sent buffer callbacks */
 	code = -1;				/* code not yet set */
-	head = ACCESS_ONCE(sc->sr_head);	/* snapshot the head */
+	head = READ_ONCE(sc->sr_head);	/* snapshot the head */
 	tail = sc->sr_tail;
 	while (head != tail) {
 		pbuf = &sc->sr[tail].pbuf;

@@ -1232,7 +1232,7 @@ static u64 intel_cqm_event_count(struct perf_event *event)
 	 * check @event's RMID afterwards, and if it has changed,
 	 * discard the result of the read.
 	 */
-	rr.rmid = ACCESS_ONCE(event->hw.cqm_rmid);
+	rr.rmid = READ_ONCE(event->hw.cqm_rmid);
 
 	if (!__rmid_valid(rr.rmid))
 		goto out;
