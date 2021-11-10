@@ -524,7 +524,7 @@ static inline struct inode *d_inode(const struct dentry *dentry)
  */
 static inline struct inode *d_inode_rcu(const struct dentry *dentry)
 {
-	return ACCESS_ONCE(dentry->d_inode);
+	return READ_ONCE(dentry->d_inode);
 }
 
 /**

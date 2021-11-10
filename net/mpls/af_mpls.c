@@ -169,7 +169,7 @@ static u32 mpls_multipath_hash(struct mpls_route *rt, struct sk_buff *skb)
 static struct mpls_nh *mpls_select_multipath(struct mpls_route *rt,
 					     struct sk_buff *skb)
 {
-	int alive = ACCESS_ONCE(rt->rt_nhn_alive);
+	int alive = READ_ONCE(rt->rt_nhn_alive);
 	u32 hash = 0;
 	int nh_index = 0;
 	int n = 0;
@@ -1008,7 +1008,7 @@ static void mpls_ifup(struct net_device *dev, unsigned int nh_flags)
 			nh->nh_flags &= ~nh_flags;
 		} endfor_nexthops(rt);
 
-		ACCESS_ONCE(rt->rt_nhn_alive) = alive;
+		WRITE_ONCE(rt->rt_nhn_alive, alive);
 	}
 }
 

@@ -217,7 +217,7 @@ static int pagefault_single_data_segment(struct mlx5_ib_qp *qp,
 		goto srcu_unlock;
 	}
 
-	current_seq = ACCESS_ONCE(mr->umem->odp_data->notifiers_seq);
+	current_seq = READ_ONCE(mr->umem->odp_data->notifiers_seq);
 	/*
 	 * Ensure the sequence number is valid for some time before we call
 	 * gup.

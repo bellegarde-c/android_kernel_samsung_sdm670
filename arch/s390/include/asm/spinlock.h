@@ -55,7 +55,7 @@ static inline int arch_spin_value_unlocked(arch_spinlock_t lock)
 
 static inline int arch_spin_is_locked(arch_spinlock_t *lp)
 {
-	return ACCESS_ONCE(lp->lock) != 0;
+	return READ_ONCE(lp->lock) != 0;
 }
 
 static inline int arch_spin_trylock_once(arch_spinlock_t *lp)
@@ -133,14 +133,14 @@ extern int _raw_write_trylock_retry(arch_rwlock_t *lp);
 
 static inline int arch_read_trylock_once(arch_rwlock_t *rw)
 {
-	unsigned int old = ACCESS_ONCE(rw->lock);
+	unsigned int old = READ_ONCE(rw->lock);
 	return likely((int) old >= 0 &&
 		      _raw_compare_and_swap(&rw->lock, old, old + 1));
 }
 
 static inline int arch_write_trylock_once(arch_rwlock_t *rw)
 {
-	unsigned int old = ACCESS_ONCE(rw->lock);
+	unsigned int old = READ_ONCE(rw->lock);
 	return likely(old == 0 &&
 		      _raw_compare_and_swap(&rw->lock, 0, 0x80000000));
 }
@@ -227,7 +227,7 @@ static inline void arch_read_unlock(arch_rwlock_t *rw)
 	unsigned int old;
 
 	do {
-		old = ACCESS_ONCE(rw->lock);
+		old = READ_ONCE(rw->lock);
 	} while (!_raw_compare_and_swap(&rw->lock, old, old - 1));
 }
 

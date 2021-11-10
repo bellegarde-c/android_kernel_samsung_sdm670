@@ -183,7 +183,7 @@ static void handle_midi_tx(struct fw_card *card, struct fw_request *request,
 				bytes = 3;
 		}
 
-		substream = ACCESS_ONCE(tscm->tx_midi_substreams[port]);
+		substream = READ_ONCE(tscm->tx_midi_substreams[port]);
 		if (substream != NULL)
 			snd_rawmidi_receive(substream, b + 1, bytes);
 	}

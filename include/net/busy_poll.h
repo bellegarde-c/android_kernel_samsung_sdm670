@@ -49,13 +49,13 @@ static inline u64 busy_loop_us_clock(void)
 
 static inline unsigned long sk_busy_loop_end_time(struct sock *sk)
 {
-	return busy_loop_us_clock() + ACCESS_ONCE(sk->sk_ll_usec);
+	return busy_loop_us_clock() + READ_ONCE(sk->sk_ll_usec);
 }
 
 /* in poll/select we use the global sysctl_net_ll_poll value */
 static inline unsigned long busy_loop_end_time(void)
 {
-	return busy_loop_us_clock() + ACCESS_ONCE(sysctl_net_busy_poll);
+	return busy_loop_us_clock() + READ_ONCE(sysctl_net_busy_poll);
 }
 
 static inline bool sk_can_busy_loop(struct sock *sk)

@@ -104,7 +104,7 @@ static void async_midi_port_callback(struct fw_card *card, int rcode,
 				     void *callback_data)
 {
 	struct snd_fw_async_midi_port *port = callback_data;
-	struct snd_rawmidi_substream *substream = ACCESS_ONCE(port->substream);
+	struct snd_rawmidi_substream *substream = READ_ONCE(port->substream);
 
 	/* This port is closed. */
 	if (substream == NULL)
@@ -129,7 +129,7 @@ static void midi_port_work(struct work_struct *work)
 {
 	struct snd_fw_async_midi_port *port =
 			container_of(work, struct snd_fw_async_midi_port, work);
-	struct snd_rawmidi_substream *substream = ACCESS_ONCE(port->substream);
+	struct snd_rawmidi_substream *substream = READ_ONCE(port->substream);
 	int generation;
 	int type;
 

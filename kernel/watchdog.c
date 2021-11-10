@@ -791,7 +791,7 @@ int proc_watchdog_thresh(struct ctl_table *table, int write,
 		goto out;
 	}
 
-	old = ACCESS_ONCE(watchdog_thresh);
+	old = READ_ONCE(watchdog_thresh);
 	err = proc_dointvec_minmax(table, write, buffer, lenp, ppos);
 
 	if (err || !write)
@@ -800,7 +800,7 @@ int proc_watchdog_thresh(struct ctl_table *table, int write,
 	/*
 	 * Update the sample period. Restore on failure.
 	 */
-	new = ACCESS_ONCE(watchdog_thresh);
+	new = READ_ONCE(watchdog_thresh);
 	if (old == new)
 		goto out;
 

@@ -38,7 +38,7 @@
 
 static inline int arch_spin_is_locked(arch_spinlock_t *lock)
 {
-	u32 counters = ACCESS_ONCE(lock->lock);
+	u32 counters = READ_ONCE(lock->lock);
 
 	return ((counters >> 16) ^ counters) & 0xffff;
 }
@@ -68,7 +68,7 @@ static inline void arch_spin_unlock_wait(arch_spinlock_t *lock)
 
 static inline int arch_spin_is_contended(arch_spinlock_t *lock)
 {
-	u32 counters = ACCESS_ONCE(lock->lock);
+	u32 counters = READ_ONCE(lock->lock);
 
 	return (((counters >> 16) - counters) & 0xffff) > 1;
 }

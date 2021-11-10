@@ -350,7 +350,7 @@ static void update_pcm_pointers(struct amdtp_stream *s,
 	ptr = s->pcm_buffer_pointer + frames;
 	if (ptr >= pcm->runtime->buffer_size)
 		ptr -= pcm->runtime->buffer_size;
-	ACCESS_ONCE(s->pcm_buffer_pointer) = ptr;
+	WRITE_ONCE(s->pcm_buffer_pointer, ptr);
 
 	s->pcm_period_pointer += frames;
 	if (s->pcm_period_pointer >= pcm->runtime->period_size) {
@@ -362,7 +362,7 @@ static void update_pcm_pointers(struct amdtp_stream *s,
 static void pcm_period_tasklet(unsigned long data)
 {
 	struct amdtp_stream *s = (void *)data;
-	struct snd_pcm_substream *pcm = ACCESS_ONCE(s->pcm);
+	struct snd_pcm_substream *pcm = READ_ONCE(s->pcm);
 
 	if (pcm)
 		snd_pcm_period_elapsed(pcm);
@@ -424,7 +424,7 @@ static int handle_out_packet(struct amdtp_stream *s, unsigned int cycle,
 	data_blocks = calculate_data_blocks(s, syt);
 	pcm_frames = s->process_data_blocks(s, buffer + 2, data_blocks, &syt);
 
-	buffer[0] = cpu_to_be32(ACCESS_ONCE(s->source_node_id_field) |
+	buffer[0] = cpu_to_be32(READ_ONCE(s->source_node_id_field) |
 				(s->data_block_quadlets << CIP_DBS_SHIFT) |
 				s->data_block_counter);
 	buffer[1] = cpu_to_be32(CIP_EOH |
@@ -440,7 +440,7 @@ static int handle_out_packet(struct amdtp_stream *s, unsigned int cycle,
 	if (queue_out_packet(s, payload_length) < 0)
 		return -EIO;
 
-	pcm = ACCESS_ONCE(s->pcm);
+	pcm = READ_ONCE(s->pcm);
 	if (pcm && pcm_frames > 0)
 		update_pcm_pointers(s, pcm, pcm_frames);
 
@@ -555,7 +555,7 @@ end:
 	if (queue_in_packet(s) < 0)
 		return -EIO;
 
-	pcm = ACCESS_ONCE(s->pcm);
+	pcm = READ_ONCE(s->pcm);
 	if (pcm && pcm_frames > 0)
 		update_pcm_pointers(s, pcm, pcm_frames);
 
@@ -827,7 +827,7 @@ unsigned long amdtp_stream_pcm_pointer(struct amdtp_stream *s)
 	if (!in_interrupt() && amdtp_stream_running(s))
 		fw_iso_context_flush_completions(s->context);
 
-	return ACCESS_ONCE(s->pcm_buffer_pointer);
+	return READ_ONCE(s->pcm_buffer_pointer);
 }
 EXPORT_SYMBOL(amdtp_stream_pcm_pointer);
 
@@ -838,9 +838,8 @@ EXPORT_SYMBOL(amdtp_stream_pcm_pointer);
 void amdtp_stream_update(struct amdtp_stream *s)
 {
 	/* Precomputing. */
-	ACCESS_ONCE(s->source_node_id_field) =
-		(fw_parent_device(s->unit)->card->node_id << CIP_SID_SHIFT) &
-								CIP_SID_MASK;
+	WRITE_ONCE(s->source_node_id_field,
+		   (fw_parent_device(s->unit)->card->node_id << CIP_SID_SHIFT) & CIP_SID_MASK);
 }
 EXPORT_SYMBOL(amdtp_stream_update);
 
@@ -883,7 +882,7 @@ void amdtp_stream_pcm_abort(struct amdtp_stream *s)
 {
 	struct snd_pcm_substream *pcm;
 
-	pcm = ACCESS_ONCE(s->pcm);
+	pcm = READ_ONCE(s->pcm);
 	if (pcm)
 		snd_pcm_stop_xrun(pcm);
 }

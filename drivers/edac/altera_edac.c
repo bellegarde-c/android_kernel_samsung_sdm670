@@ -176,8 +176,8 @@ static ssize_t altr_sdr_mc_err_inject_write(struct file *file,
 	 * The ACCESS_ONCE macros and printk are used to prevent the
 	 * the compiler optimizing these reads out.
 	 */
-	reg = ACCESS_ONCE(ptemp[0]);
-	read_reg = ACCESS_ONCE(ptemp[1]);
+	reg = READ_ONCE(ptemp[0]);
+	read_reg = READ_ONCE(ptemp[1]);
 	/* Force Read */
 	rmb();
 
@@ -625,7 +625,7 @@ static ssize_t altr_edac_device_trig(struct file *file,
 	for (i = 0; i < (priv->trig_alloc_sz / sizeof(*ptemp)); i++) {
 		/* Read data so we're in the correct state */
 		rmb();
-		if (ACCESS_ONCE(ptemp[i]))
+		if (READ_ONCE(ptemp[i]))
 			result = -1;
 		/* Toggle Error bit (it is latched), leave ECC enabled */
 		writel(error_mask, (drvdata->base + priv->set_err_ofst));
@@ -642,7 +642,7 @@ static ssize_t altr_edac_device_trig(struct file *file,
 
 	/* Read out written data. ECC error caused here */
 	for (i = 0; i < ALTR_TRIGGER_READ_WRD_CNT; i++)
-		if (ACCESS_ONCE(ptemp[i]) != i)
+		if (READ_ONCE(ptemp[i]) != i)
 			edac_printk(KERN_ERR, EDAC_DEVICE,
 				    "Read doesn't match written data\n");
 
