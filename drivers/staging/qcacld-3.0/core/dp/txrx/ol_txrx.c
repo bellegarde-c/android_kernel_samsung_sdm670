@@ -2456,7 +2456,9 @@ ol_txrx_peer_attach(struct cdp_soc_t *soc_hdl, uint8_t vdev_id,
 				    vdev->wait_on_peer_id, (int) rc);
 			/* Added for debugging only */
 			ol_txrx_dump_peer_access_list(temp_peer);
+#ifdef WMI_INTERFACE_EVENT_LOGGING
 			wlan_roam_debug_dump_table();
+#endif
 			vdev->wait_on_peer_id = OL_TXRX_INVALID_LOCAL_PEER_ID;
 
 			return QDF_STATUS_E_FAILURE;
@@ -3193,12 +3195,13 @@ int ol_txrx_peer_release_ref(ol_txrx_peer_handle peer,
 	if (debug_id == PEER_DEBUG_ID_OL_RX_THREAD)
 		ref_silent = true;
 
+#ifdef WMI_INTERFACE_EVENT_LOGGING
 	if (!ref_silent)
 		wlan_roam_debug_log(vdev->vdev_id, DEBUG_PEER_UNREF_DELETE,
 				    DEBUG_INVALID_PEER_ID, &peer->mac_addr.raw,
 				    peer, 0xdead,
 				    qdf_atomic_read(&peer->ref_cnt));
-
+#endif
 
 	/*
 	 * Hold the lock all the way from checking if the peer ref count
@@ -3246,11 +3249,13 @@ int ol_txrx_peer_release_ref(ol_txrx_peer_handle peer,
 
 	if (qdf_atomic_dec_and_test(&peer->ref_cnt)) {
 		u16 peer_id;
+#ifdef WMI_INTERFACE_EVENT_LOGGING
 		wlan_roam_debug_log(vdev->vdev_id,
 				    DEBUG_DELETING_PEER_OBJ,
 				    DEBUG_INVALID_PEER_ID,
 				    &peer->mac_addr.raw, peer, 0,
 				    qdf_atomic_read(&peer->ref_cnt));
+#endif
 		peer_id = peer->local_id;
 
 		/* Drop all pending frames in the rx thread queue */
@@ -3360,9 +3365,11 @@ int ol_txrx_peer_release_ref(ol_txrx_peer_handle peer,
 	}
 	return rc;
 ERR_STATE:
+#ifdef WMI_INTERFACE_EVENT_LOGGING
 	wlan_roam_debug_log(vdev->vdev_id, DEBUG_PEER_UNREF_DELETE,
 			    DEBUG_INVALID_PEER_ID, &peer->mac_addr.raw,
 			    peer, err_code, qdf_atomic_read(&peer->ref_cnt));
+#endif
 	return -EINVAL;
 }
 
