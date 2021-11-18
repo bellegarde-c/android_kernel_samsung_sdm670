@@ -45,7 +45,7 @@
 
 		qcom,initial-pwrlevel = <1>;
 
-		qcom,idle-timeout = <80>; /* msec */
+		qcom,idle-timeout = <58>; /* msec */
 		qcom,strtstp-sleepwake;
 		qcom,gpu-disable-fuse = <0x44 0x00000001 27>;
 
