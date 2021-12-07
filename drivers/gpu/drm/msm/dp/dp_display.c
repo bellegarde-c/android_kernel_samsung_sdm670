@@ -2139,6 +2139,7 @@ error_sysfs:
 	secdp_sysfs_put(dp->sysfs);
 #endif
 error_link:
+	dp->aux->drm_aux_deregister(dp->aux);
 	dp_aux_put(dp->aux);
 error_aux:
 	dp_power_put(dp->power);
