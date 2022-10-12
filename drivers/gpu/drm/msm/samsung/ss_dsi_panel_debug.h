@@ -112,7 +112,9 @@ void ss_smmu_debug_unmap(enum ss_smmu_type type, struct sg_table *table);
 
 void ss_inc_ftout_debug(const char *name);
 
+#if defined(CONFIG_SEC_DEBUG)
 extern bool read_debug_partition(enum debug_partition_index index, void *value);
 extern bool write_debug_partition(enum debug_partition_index index, void *value);
+#endif
 
 #endif

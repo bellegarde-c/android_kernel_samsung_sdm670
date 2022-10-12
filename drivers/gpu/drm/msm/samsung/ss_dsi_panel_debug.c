@@ -610,6 +610,7 @@ static void ss_panel_debug_create(struct samsung_display_driver_data *vdd)
 	/* TBD */
 }
 
+#if defined(CONFIG_SEC_DEBUG)
 static bool ss_read_debug_partition(struct lcd_debug_t *value)
 {
 	return read_debug_partition(debug_index_lcd_debug_info, (void *)value);
@@ -619,9 +620,11 @@ static bool ss_write_debug_partition(struct lcd_debug_t *value)
 {
 	return write_debug_partition(debug_index_lcd_debug_info, (void *)value);
 }
+#endif
 
 void ss_inc_ftout_debug(const char *name)
 {
+#if defined(CONFIG_SEC_DEBUG)
 	struct lcd_debug_t lcd_debug;
 
 	memset(&lcd_debug, 0, sizeof(struct lcd_debug_t));
@@ -629,11 +632,13 @@ void ss_inc_ftout_debug(const char *name)
 	lcd_debug.ftout.count += 1;
 	strncpy(lcd_debug.ftout.name, name, MAX_FTOUT_NAME);
 	ss_write_debug_partition(&lcd_debug);
+#endif
 }
 
 static int dpci_notifier_callback(struct notifier_block *self,
 				 unsigned long event, void *data)
 {
+#if defined(CONFIG_SEC_DEBUG)
 	ssize_t len = 0;
 	char tbuf[SS_XLOG_DPCI_LENGTH] = {0,};
 	struct lcd_debug_t lcd_debug;
@@ -655,7 +660,7 @@ static int dpci_notifier_callback(struct notifier_block *self,
 	memset((void *)&lcd_debug, 0, sizeof(struct lcd_debug_t));
 	ss_write_debug_partition(&lcd_debug);
 	set_dpui_field(DPUI_KEY_QCT_SSLOG, tbuf, len);
-
+#endif
 	return 0;
 }
 
@@ -788,6 +793,7 @@ fail_alloc:
  */
 int ss_smmu_debug_init(struct samsung_display_driver_data *vdd)
 {
+#if defined(CONFIG_SEC_DEBUG)
 	int cnt;
 	int ret = 0;
 
@@ -820,7 +826,7 @@ int ss_smmu_debug_init(struct samsung_display_driver_data *vdd)
 init_fail:
 	for (cnt = 0; cnt < SMMU_MAX_DEBUG; cnt++)
 		vdd->ss_debug_smmu[cnt].init_done = false;
-
+#endif
 	return -EPERM;
 }
 

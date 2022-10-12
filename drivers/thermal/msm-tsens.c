@@ -25,7 +25,7 @@
 
 LIST_HEAD(tsens_device_list);
 
-#if CONFIG_SEC_PM_DEBUG
+#if defined(CONFIG_SEC_PM_DEBUG)
 static struct delayed_work ts_print_work;
 struct tsens_device *ts_tmdev;
 static int ts_print_num[] = {1, 2, 3, 4, 7, 8, 9, 10, 5, 6, 11, 12};
@@ -233,13 +233,13 @@ static int tsens_tm_remove(struct platform_device *pdev)
 		list_del(&tmdev->list);
 	platform_set_drvdata(pdev, NULL);
 
-#if CONFIG_SEC_PM_DEBUG
+#if defined(CONFIG_SEC_PM_DEBUG)
 	cancel_delayed_work_sync(&ts_print_work);
 #endif
 	return 0;
 }
 
-#if defined(CONFIG_SEC_PM)
+#if defined(CONFIG_SEC_PM_DEBUG)
 static void __ref ts_print(struct work_struct *work)
 {
 	struct tsens_sensor ts_sensor;
@@ -308,7 +308,7 @@ int tsens_tm_probe(struct platform_device *pdev)
 	list_add_tail(&tmdev->list, &tsens_device_list);
 	platform_set_drvdata(pdev, tmdev);
 
-#if defined(CONFIG_SEC_PM)
+#if defined(CONFIG_SEC_PM_DEBUG)
 	if (ts_print_count == 0) {
 		ts_tmdev = tmdev;
 		INIT_DELAYED_WORK(&ts_print_work, ts_print);
