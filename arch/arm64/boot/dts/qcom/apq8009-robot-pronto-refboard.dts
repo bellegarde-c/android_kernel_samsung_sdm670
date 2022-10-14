@@ -303,7 +303,7 @@
 			polling-delay-passive = <0>;
 			polling-delay = <0>;
 			thermal-sensors = <&pm8916_vadc 0x3c>;
-			thermal-governor = "user_space";
+			thermal-governor = "step_wise";
 
 			trips {
 				active-config0 {
@@ -318,7 +318,7 @@
 			polling-delay-passive = <0>;
 			polling-delay = <0>;
 			thermal-sensors = <&pm8916_vadc 0x32>;
-			thermal-governor = "user_space";
+			thermal-governor = "step_wise";
 
 			trips {
 				active-config0 {

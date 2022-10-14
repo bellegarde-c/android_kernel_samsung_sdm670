@@ -46,7 +46,7 @@
 	aoss0-usr {
 		polling-delay-passive = <0>;
 		polling-delay = <0>;
-		thermal-governor = "user_space";
+		thermal-governor = "step_wise";
 		thermal-sensors = <&tsens0 0>;
 		wake-capable-sensor;
 		trips {
@@ -61,7 +61,7 @@
 	mdm-core-usr {
 		polling-delay-passive = <0>;
 		polling-delay = <0>;
-		thermal-governor = "user_space";
+		thermal-governor = "step_wise";
 		thermal-sensors = <&tsens0 1>;
 		wake-capable-sensor;
 		trips {
@@ -76,7 +76,7 @@
 	lpass-usr {
 		polling-delay-passive = <0>;
 		polling-delay = <0>;
-		thermal-governor = "user_space";
+		thermal-governor = "step_wise";
 		thermal-sensors = <&tsens0 2>;
 		wake-capable-sensor;
 		trips {
@@ -91,7 +91,7 @@
 	camera-usr {
 		polling-delay-passive = <0>;
 		polling-delay = <0>;
-		thermal-governor = "user_space";
+		thermal-governor = "step_wise";
 		thermal-sensors = <&tsens0 3>;
 		wake-capable-sensor;
 		trips {
@@ -107,7 +107,7 @@
 		polling-delay-passive = <0>;
 		polling-delay = <0>;
 		thermal-sensors = <&tsens0 4>;
-		thermal-governor = "user_space";
+		thermal-governor = "step_wise";
 		wake-capable-sensor;
 		trips {
 			active-config0 {
@@ -122,7 +122,7 @@
 		polling-delay-passive = <0>;
 		polling-delay = <0>;
 		thermal-sensors = <&tsens0 5>;
-		thermal-governor = "user_space";
+		thermal-governor = "step_wise";
 		wake-capable-sensor;
 		trips {
 			active-config0 {
@@ -137,7 +137,7 @@
 		polling-delay-passive = <0>;
 		polling-delay = <0>;
 		thermal-sensors = <&tsens0 6>;
-		thermal-governor = "user_space";
+		thermal-governor = "step_wise";
 		wake-capable-sensor;
 		trips {
 			active-config0 {
@@ -152,7 +152,7 @@
 		polling-delay-passive = <0>;
 		polling-delay = <0>;
 		thermal-sensors = <&tsens0 7>;
-		thermal-governor = "user_space";
+		thermal-governor = "step_wise";
 		wake-capable-sensor;
 		trips {
 			active-config0 {
@@ -167,7 +167,7 @@
 		polling-delay-passive = <0>;
 		polling-delay = <0>;
 		thermal-sensors = <&tsens0 8>;
-		thermal-governor = "user_space";
+		thermal-governor = "step_wise";
 		wake-capable-sensor;
 		trips {
 			active-config0 {
@@ -182,7 +182,7 @@
 		polling-delay-passive = <0>;
 		polling-delay = <0>;
 		thermal-sensors = <&tsens0 9>;
-		thermal-governor = "user_space";
+		thermal-governor = "step_wise";
 		wake-capable-sensor;
 		trips {
 			active-config0 {
@@ -197,7 +197,7 @@
 		polling-delay-passive = <0>;
 		polling-delay = <0>;
 		thermal-sensors = <&tsens0 10>;
-		thermal-governor = "user_space";
+		thermal-governor = "step_wise";
 		wake-capable-sensor;
 		trips {
 			active-config0 {

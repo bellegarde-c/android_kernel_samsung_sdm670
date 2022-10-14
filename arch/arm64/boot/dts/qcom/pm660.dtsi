@@ -400,7 +400,7 @@
 		polling-delay = <0>;
 		thermal-sensors = <&pm660_adc_tm 0x4c>;
 		wake-capable-sensor;
-		thermal-governor = "user_space";
+		thermal-governor = "step_wise";
 
 		trips {
 			active-config0 {
@@ -416,7 +416,7 @@
 		polling-delay = <0>;
 		thermal-sensors = <&pm660_adc_tm 0x4d>;
 		wake-capable-sensor;
-		thermal-governor = "user_space";
+		thermal-governor = "step_wise";
 
 		trips {
 			active-config0 {
@@ -432,7 +432,7 @@
 		polling-delay = <0>;
 		thermal-sensors = <&pm660_adc_tm 0x4e>;
 		wake-capable-sensor;
-		thermal-governor = "user_space";
+		thermal-governor = "step_wise";
 
 		trips {
 			active-config0 {
@@ -448,7 +448,7 @@
 		polling-delay = <0>;
 		thermal-sensors = <&pm660_adc_tm 0x4f>;
 		wake-capable-sensor;
-		thermal-governor = "user_space";
+		thermal-governor = "step_wise";
 
 		trips {
 			active-config0 {
@@ -464,7 +464,7 @@
 		polling-delay = <0>;
 		thermal-sensors = <&pm660_adc_tm 0x51>;
 		wake-capable-sensor;
-		thermal-governor = "user_space";
+		thermal-governor = "step_wise";
 
 		trips {
 			active-config0 {
